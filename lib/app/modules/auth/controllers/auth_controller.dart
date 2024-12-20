@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../color_constants.dart';
 import '../../../../common/ui.dart';
@@ -34,8 +33,8 @@ class AuthController extends GetxController {
   var loginClickable = false.obs;
   var accepted = false.obs;
   var code = ''.obs;
-  GoogleSignIn googleAuth = GoogleSignIn();
-  GoogleSignInAccount googleAccount;
+  // GoogleSignIn googleAuth = GoogleSignIn();
+  // GoogleSignInAccount googleAccount;
   var users = [].obs;
   var auth;
   var authUserId = 0.obs;
@@ -69,7 +68,7 @@ class AuthController extends GetxController {
     print("FINAL TOKEN===> $token");
   }
 
-  Future<void> signInWithGoogle() async {
+ /* Future<void> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
@@ -120,9 +119,9 @@ class AuthController extends GetxController {
           }
 
           loading.value = false;
-          /*if(!foundDeviceToken){
+          *//*if(!foundDeviceToken){
             await saveDeviceToken(Domain.deviceToken, Get.find<MyAuthService>().myUser.value.id);
-          }*/
+          }*//*
           Get.showSnackbar(Ui.SuccessSnackBar(message: "You signed in successfully " ));
           await Get.toNamed(Routes.ROOT);
 
@@ -140,7 +139,7 @@ class AuthController extends GetxController {
         }
       }
     }
-  }
+  }*/
 
   createGoogleUser(String name, String email, String phone ) async {
     this.email.value = email;
@@ -180,10 +179,10 @@ class AuthController extends GetxController {
     }
   }
 
-  googleSignOut() async {
-    googleAccount = await googleAuth.signOut();
-
-  }
+  // googleSignOut() async {
+  //   googleAccount = await googleAuth.signOut();
+  //
+  // }
 
   getAllUsers()async{
     var headers = {

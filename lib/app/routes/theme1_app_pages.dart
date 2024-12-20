@@ -16,9 +16,6 @@ import '../modules/category/bindings/category_binding.dart';
 import '../modules/category/views/categories_view.dart';
 import '../modules/e_service/bindings/e_service_binding.dart';
 import '../modules/e_service/views/e_service_view.dart';
-import '../modules/help_privacy/bindings/help_privacy_binding.dart';
-import '../modules/help_privacy/views/help_view.dart';
-import '../modules/help_privacy/views/privacy_view.dart';
 import '../modules/identity_files/Views/import_identity_files_form.dart';
 import '../modules/identity_files/binding/import_identity_files_binding.dart';
 import '../modules/notifications/bindings/notifications_binding.dart';
@@ -74,8 +71,6 @@ class Theme1AppPages {
     GetPage(name: Routes.FORGOT_PASSWORD, page: () => ForgotPasswordView(), binding: AuthBinding()),
     GetPage(name: Routes.VERIFICATION, page: () => VerificationView(), binding: AuthBinding()),
     GetPage(name: Routes.E_SERVICE, page: () => EServiceView(), binding: EServiceBinding(), transition: Transition.downToUp),
-    GetPage(name: Routes.PRIVACY, page: () => PrivacyView(), binding: HelpPrivacyBinding()),
-    GetPage(name: Routes.HELP, page: () => HelpView(), binding: HelpPrivacyBinding()),
     GetPage(name: Routes.POLITIQUE, page: () => Politique(), binding: AuthBinding()),
 
     //GetPage(name: Routes.GALLERY, page: () => GalleryView(), binding: GalleryBinding(), transition: Transition.fadeIn),

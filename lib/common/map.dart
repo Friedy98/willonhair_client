@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:map_launcher/map_launcher.dart' as launcher;
+// import 'package:map_launcher/map_launcher.dart' as launcher;
 
 import '../app/models/address_model.dart';
 import '../app/providers/laravel_provider.dart';
@@ -71,43 +71,43 @@ class MapsUtil {
     );
   }
 
-  static void openMapsSheet(context, LatLng latLng, String _title) async {
-    try {
-      final coords = launcher.Coords(latLng.latitude, latLng.longitude);
-      final title = _title ?? "";
-      final availableMaps = await launcher.MapLauncher.installedMaps;
-
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                child: Wrap(
-                  children: <Widget>[
-                    for (var map in availableMaps)
-                      ListTile(
-                        onTap: () => map.showDirections(
-                          directionsMode: launcher.DirectionsMode.driving,
-                          destinationTitle: title,
-                          destination: coords,
-                        ),
-                        title: Text(map.mapName, style: Get.textTheme.bodyText2),
-                        leading: SvgPicture.asset(
-                          map.icon,
-                          height: 30.0,
-                          width: 30.0,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      );
-    } catch (e) {
-      //Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
-    }
-  }
+  // static void openMapsSheet(context, LatLng latLng, String _title) async {
+  //   try {
+  //     final coords = launcher.Coords(latLng.latitude, latLng.longitude);
+  //     final title = _title ?? "";
+  //     final availableMaps = await launcher.MapLauncher.installedMaps;
+  //
+  //     showModalBottomSheet(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return SafeArea(
+  //           child: SingleChildScrollView(
+  //             child: Container(
+  //               child: Wrap(
+  //                 children: <Widget>[
+  //                   for (var map in availableMaps)
+  //                     ListTile(
+  //                       onTap: () => map.showDirections(
+  //                         directionsMode: launcher.DirectionsMode.driving,
+  //                         destinationTitle: title,
+  //                         destination: coords,
+  //                       ),
+  //                       title: Text(map.mapName, style: Get.textTheme.bodyText2),
+  //                       leading: SvgPicture.asset(
+  //                         map.icon,
+  //                         height: 30.0,
+  //                         width: 30.0,
+  //                       ),
+  //                     ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     );
+  //   } catch (e) {
+  //     //Get.showSnackbar(Ui.ErrorSnackBar(message: e.toString()));
+  //   }
+  // }
 }

@@ -448,7 +448,7 @@ class EProviderView extends GetView<EProviderController> {
                           ),
                           MaterialButton(
                             onPressed: () {
-                              MapsUtil.openMapsSheet(context, _address.getLatLng(), controller.eProvider.value.name);
+                              // MapsUtil.openMapsSheet(context, _address.getLatLng(), controller.eProvider.value.name);
                             },
                             height: 44,
                             minWidth: 44,
