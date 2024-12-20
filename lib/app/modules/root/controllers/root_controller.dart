@@ -1,14 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-import '../../../../main.dart';
 import '../../../models/custom_page_model.dart';
 import '../../../providers/odoo_provider.dart';
 import '../../../repositories/custom_page_repository.dart';
-import '../../../repositories/notification_repository.dart';
 import '../../../routes/app_routes.dart';
 import '../../../services/my_auth_service.dart';
 import '../../account/controllers/account_controller.dart';
@@ -17,12 +13,8 @@ import '../../home/controllers/home_controller.dart';
 import '../../home/views/home2_view.dart';
 import '../../home/widgets/fidelity_card_view.dart';
 import '../../notifications/controllers/notifications_controller.dart';
-import '../../notifications/views/notifications_view.dart';
-import '../../profile/controllers/profile_controller.dart';
 import '../../userBookings/controllers/bookings_controller.dart';
 import '../../userBookings/views/bookings_view.dart';
-import '../../userTravels/controllers/user_travels_controller.dart';
-import '../../userTravels/views/userTravels_view.dart';
 
 class RootController extends GetxController {
   final currentIndex = 0.obs;

@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../models/message_model.dart';
 import '../../../models/notification_model.dart' as model;
 import '../../../routes/app_routes.dart';
-import '../../../services/my_auth_service.dart';
-import '../../messages/controllers/messages_controller.dart';
-import '../../root/controllers/root_controller.dart';
-import '../../userBookings/controllers/bookings_controller.dart';
 import '../controllers/notifications_controller.dart';
 import 'notification_item_widget.dart';
 

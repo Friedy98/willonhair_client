@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 import '../../userBookings/controllers/bookings_controller.dart';
 
-class TravelInspectController extends GetxController {
+class InspectController extends GetxController {
 
   TextEditingController city = TextEditingController();
   var isClicked = false.obs;

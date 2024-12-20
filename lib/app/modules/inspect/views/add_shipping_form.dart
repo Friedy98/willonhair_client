@@ -14,9 +14,9 @@ import '../../account/widgets/account_link_widget.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../../global_widgets/block_button_widget.dart';
 import '../../userBookings/widgets/bookings_list_loader_widget.dart';
-import '../controllers/travel_inspect_controller.dart';
+import '../controllers/inspect_controller.dart';
 
-class AddShippingView extends GetView<TravelInspectController> {
+class AddShippingView extends GetView<InspectController> {
 
   List bookings = [];
 

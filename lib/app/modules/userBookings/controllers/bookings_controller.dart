@@ -15,7 +15,7 @@ import '../../../routes/app_routes.dart';
 import '../../../services/my_auth_service.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../../home/controllers/home_controller.dart';
-import '../../travel_inspect/controllers/travel_inspect_controller.dart';
+import '../../inspect/controllers/inspect_controller.dart';
 
 class BookingsController extends GetxController {
 
@@ -208,8 +208,8 @@ class BookingsController extends GetxController {
     Get.lazyPut<OdooApiClient>(
           () => OdooApiClient(),
     );
-    Get.lazyPut<TravelInspectController>(
-          () => TravelInspectController(),
+    Get.lazyPut<InspectController>(
+          () => InspectController(),
     );
   }
 
@@ -582,9 +582,9 @@ class BookingsController extends GetxController {
                               data.remove(a);
                             }
                           }
-                          Get.lazyPut(() => TravelInspectController());
-                          Get.find<TravelInspectController>().updateAppointment(selectedAppointment, data);
-                          Get.find<TravelInspectController>().editAppointment.value = true;
+                          Get.lazyPut(() => InspectController());
+                          Get.find<InspectController>().updateAppointment(selectedAppointment, data);
+                          Get.find<InspectController>().editAppointment.value = true;
                           Get.toNamed(Routes.ADD_SHIPPING_FORM);
                         },
                         child: Container(

@@ -1,6 +1,4 @@
 import 'package:get/get.dart' show GetPage, Transition;
-import '../modules/add_ravel_form/Views/add_travel_form.dart';
-import '../modules/add_ravel_form/binding/add_travel_binding.dart';
 import '../modules/auth/views/politique.dart';
 import '../modules/fidelisation/binding/validation_Biding.dart';
 import '../modules/fidelisation/views/attribute_points.dart';
@@ -23,8 +21,6 @@ import '../modules/help_privacy/views/help_view.dart';
 import '../modules/help_privacy/views/privacy_view.dart';
 import '../modules/identity_files/Views/import_identity_files_form.dart';
 import '../modules/identity_files/binding/import_identity_files_binding.dart';
-import '../modules/messages/binding/message_binding.dart';
-import '../modules/messages/views/chats_view.dart';
 import '../modules/notifications/bindings/notifications_binding.dart';
 import '../modules/notifications/views/notification_details.dart';
 import '../modules/notifications/views/notifications_view.dart';
@@ -40,9 +36,8 @@ import '../modules/settings/views/addresses_view.dart';
 import '../modules/settings/views/language_view.dart';
 import '../modules/settings/views/settings_view.dart';
 import '../modules/settings/views/theme_mode_view.dart';
-import '../modules/travel_inspect/bindings/travel_inspect_binding.dart';
-import '../modules/travel_inspect/views/add_shipping_form.dart';
-import '../modules/travel_inspect/views/travel_inspect_view.dart';
+import '../modules/inspect/bindings/inspect_binding.dart';
+import '../modules/inspect/views/inspect_view.dart';
 import '../modules/userBookings/views/bookings_view.dart';
 import '../modules/userBookings/views/facturation.dart';
 import '../modules/userBookings/views/interface_POS.dart';
@@ -55,17 +50,14 @@ class Theme1AppPages {
     GetPage(name: Routes.SPLASH_VIEW, page: () => SplashView(), binding: AuthBinding()),
     GetPage(name: Routes.ROOT, page: () => RootView(), binding: RootBinding()),
     GetPage(name: Routes.RATING, page: () => RatingView(), binding: RatingBinding()),
-    GetPage(name: Routes.CHAT, page: () => ChatsView(), binding: MessageBinding()),
     GetPage(name: Routes.SETTINGS, page: () => SettingsView(), binding: SettingsBinding()),
     GetPage(name: Routes.SETTINGS_ADDRESSES, page: () => AddressesView(), binding: SettingsBinding()),
     GetPage(name: Routes.SETTINGS_THEME_MODE, page: () => ThemeModeView(), binding: SettingsBinding()),
-    GetPage(name: Routes.ADD_TRAVEL_FORM, page: () => AddTravelsView(), binding: AddTravelBinding(), transition: Transition.fadeIn),
-    GetPage(name: Routes.ADD_SHIPPING_FORM, page: () => AddShippingView(), binding: TravelInspectBinding(), transition: Transition.upToDown),
     GetPage(name: Routes.IDENTITY_FILES, page: () => AttachmentView(), binding: ImportIdentityFilesBinding()),
     GetPage(name: Routes.ADD_IDENTITY_FILES, page: () => ImportIdentityFilesView(), binding: ImportIdentityFilesBinding()),
     GetPage(name: Routes.SETTINGS_LANGUAGE, page: () => LanguageView(), binding: SettingsBinding()),
     GetPage(name: Routes.SETTINGS_ADDRESS_PICKER, page: () => AddressPickerView()),
-    GetPage(name: Routes.TRAVEL_INSPECT, page: () => TravelInspectView(), binding: TravelInspectBinding()),
+    GetPage(name: Routes.TRAVEL_INSPECT, page: () => InspectView(), binding: InspectBinding()),
 
     GetPage(name: Routes.CONTACT, page: () => ContactWidget(), transition: Transition.fadeIn),
     GetPage(name: Routes.INTERFACE_POS, page: () => InterfacePOSView(), transition: Transition.fadeIn),

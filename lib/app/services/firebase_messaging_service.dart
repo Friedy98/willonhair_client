@@ -1,23 +1,17 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import '../../color_constants.dart';
 import '../../common/ui.dart';
 import '../../main.dart';
-import '../models/booking_model.dart';
 import '../models/message_model.dart';
 import '../models/notification_model.dart';
-import '../modules/messages/controllers/messages_controller.dart';
 import '../modules/notifications/controllers/notifications_controller.dart';
 import '../modules/root/controllers/root_controller.dart';
 import '../routes/app_routes.dart';
-import 'auth_service.dart';
-import 'my_auth_service.dart';
 
 class FireBaseMessagingService extends GetxService {
   Future<FireBaseMessagingService> init() async {
@@ -208,9 +202,6 @@ class FireBaseMessagingService extends GetxService {
 
   void _newMessageNotification(RemoteMessage message) {
     RemoteNotification notification = message.notification;
-    if (Get.find<MessagesController>().initialized) {
-      Get.find<MessagesController>().refreshMessages();
-    }
     if (Get.currentRoute != Routes.CHAT) {
       Get.showSnackbar(Ui.notificationSnackBar(
         title: notification.title,

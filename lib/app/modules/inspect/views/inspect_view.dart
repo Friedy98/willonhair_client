@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import '../../../../color_constants.dart';
 import '../../../providers/odoo_provider.dart';
 import '../../../services/my_auth_service.dart';
-import '../controllers/travel_inspect_controller.dart';
+import '../controllers/inspect_controller.dart';
 
-class TravelInspectView extends GetView<TravelInspectController> {
+class InspectView extends GetView<InspectController> {
 
   @override
   Widget build(BuildContext context) {
