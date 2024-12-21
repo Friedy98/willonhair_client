@@ -8,7 +8,7 @@ class ContactWidget extends GetWidget<HomeController> {
   Widget build(BuildContext context) {
     return Material(
       child: AlertDialog(
-        title: Text('Vous souhaitez conatcter le service WillOnHair au +97798345348734', style: Get.textTheme.headline4),
+        title: Text('Vous souhaitez conatcter le service WillOnHair au +32 466 48 17 15', style: Get.textTheme.headline4),
         actions: [
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -19,7 +19,7 @@ class ContactWidget extends GetWidget<HomeController> {
               ),
               TextButton(
                   onPressed: () async{
-                    Uri phone = Uri.parse('tel:+97798345348734');
+                    Uri phone = Uri.parse('tel:+32466481715');
 
                     if (await launchUrl(phone)) {
                       Navigator.pop(context);
