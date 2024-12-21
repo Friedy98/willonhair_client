@@ -242,7 +242,7 @@ class LoginView extends GetView<AuthController> {
                           ),
                         ),
                       ),*/
-                      //if(Responsive.isMobile(context))
+                      if(Responsive.isMobile(context))
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

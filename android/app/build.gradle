@@ -38,7 +38,7 @@ android {
     lintOptions{
         checkReleaseBuilds false
     }
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -60,7 +60,7 @@ android {
     defaultConfig {
         applicationId "com.prod.willonhair.app"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
