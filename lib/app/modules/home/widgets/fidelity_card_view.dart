@@ -15,9 +15,6 @@ class FidelityCardWidget extends GetWidget<HomeController> {
   @override
   Widget build(BuildContext context) {
 
-    controller.timer = Timer.periodic(Duration(seconds: 3),
-            (Timer timer) => controller.getUserDto());
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appBarColor,

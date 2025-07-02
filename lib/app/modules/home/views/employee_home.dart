@@ -41,12 +41,9 @@ class EmployeeHomeView extends GetView<HomeController> {
     Get.lazyPut(()=>BookingsController());
     Get.lazyPut(()=>ValidationController());
 
-
     return Scaffold(
         floatingActionButton: Obx(() => controller.currentPage.value == 0 ? InkWell(
-            onTap: ()=>{
-              controller.currentPage.value = 3
-            },
+            onTap: ()=>controller.currentPage.value = 4,
             child: Container(
                 width: floatingButtonSize,
                 height: floatingButtonSize,
@@ -111,10 +108,10 @@ class EmployeeHomeView extends GetView<HomeController> {
                         : controller.currentPage.value == 2 ? EmployeeReceipt()
                         : controller.currentPage.value == 3 ? InterfacePOSView()
                         : AttributionView()
-                    ),
+                    )
                   );
                 }
-              },
+              }
             )
         )
     );

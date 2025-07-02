@@ -26,18 +26,11 @@ class ValidationController extends GetxController {
   TextEditingController pointController = TextEditingController();
 
   @override
-  void onInit() {
-    super.onInit();
-
-    initValues();
-  }
-
-  initValues()async{
-    scan();
-  }
-
-  refreshPage()async{
-    initValues();
+  void onReady() {
+    super.onReady();
+    Future.delayed(Duration(milliseconds: 300), () {
+      scan();
+    });
   }
 
   Future scan() async {
@@ -48,47 +41,7 @@ class ValidationController extends GetxController {
       print(qrResult);
       var user = await getUserInfo(qrResult);
       client.value = user;
-      if(Responsive.isMobile(Get.context)){
-        showDialog(
-            context: Get.context,
-            builder: (_){
-              return AlertDialog(
-                title: Text(client['name'], style: TextStyle(fontSize: 16)),
-                content: Text("Le client ${client['name']} a ${client['client_points']} points de fidelté et ${client['client_bonus']} points de bonus",
-                    style: TextStyle(fontSize: 12, color: Colors.black)),
-                actions: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        height: 50,
-                        width: 140,
-                        child: Center(
-                            child: TextFormField(
-                              controller: pointController,
-                              textAlign: TextAlign.center,
-                              showCursor: false,
-                              decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: background
-                              ),
-                              style: const TextStyle(fontSize: 40),
-                              keyboardType: TextInputType.number,
-                            )
-                        )
-                      ),
-                      SizedBox(width: 10),
-                      TextButton(onPressed: () {
-                        var points = client['client_points'] + int.parse(pointController.text);
-                        attributePoints(int.parse(qrResult), points);
 
-                      },
-                          child: Text("SEND", style: TextStyle(fontSize: 20, color: blue)))
-                    ],
-                  )
-                ],
-              );
-            });
-      }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
         Get.log('The user did not grant the camera permission!');

@@ -46,6 +46,11 @@ class HomeController extends GetxController {
     //_eServiceRepository = new EServiceRepository();
   }
 
+  startTimer()async{
+    timer = Timer.periodic(Duration(seconds: 3),
+            (Timer timer) => getUserDto());
+  }
+
   @override
   void onInit() async {
     getUserDto();

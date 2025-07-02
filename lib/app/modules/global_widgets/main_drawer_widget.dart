@@ -150,7 +150,6 @@ class MainDrawerWidget extends StatelessWidget {
                     text: "Scanner le code",
                     onTap: (e) async {
                       Navigator.pop(context);
-                      Get.find<ValidationController>().refreshPage();
                       Get.find<HomeController>().currentPage.value = 4;
                     },
                   ),

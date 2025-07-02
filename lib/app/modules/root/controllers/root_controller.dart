@@ -64,6 +64,7 @@ class RootController extends GetxController {
     Get.lazyPut<OdooApiClient>(
           () => OdooApiClient(),
     );
+    Get.lazyPut(()=> HomeController());
     currentIndex.value = _index;
     await refreshPage(_index);
     await Get.offNamedUntil(Routes.ROOT, (Route route) {
@@ -83,6 +84,9 @@ class RootController extends GetxController {
   }
 
   Future<void> refreshPage(int _index) async {
+    if(_index != 2){
+      Get.find<HomeController>().timer.cancel();
+    }
     switch (_index) {
       case 0:
         {
@@ -97,9 +101,9 @@ class RootController extends GetxController {
         {
           ScaffoldMessenger.of(Get.context).showSnackBar(SnackBar(
             content: Text("chargement des données..."),
-            duration: Duration(seconds: 3),
+            duration: Duration(seconds: 4),
           ));
-          await Get.find<HomeController>().getUserDto();
+          await Get.find<HomeController>().startTimer();
           break;
         }
 
