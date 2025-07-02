@@ -19,12 +19,7 @@ class FidelityCardWidget extends GetWidget<HomeController> {
       appBar: AppBar(
         backgroundColor: appBarColor,
         centerTitle: true,
-        leading: IconButton(onPressed: ()=> {
-          controller.timer.cancel(),
-          Navigator.pop(context)
-        },
-            icon: Icon(Icons.arrow_back_ios)),
-        title: Text("Fidelity Card", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,
+        title: Text("Carte de fidélité", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,
             letterSpacing: 2, color: Palette.background)),
       ),
       bottomSheet: Container(

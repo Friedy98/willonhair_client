@@ -18,7 +18,6 @@ class AttributionView extends GetView<ValidationController> {
   double height = Responsive.isMobile(Get.context) ? 40 : 60;
   double textFieldHeight = Responsive.isMobile(Get.context) ? 50 : 80;
   List bookings = [];
-  String barcode = "";
 
   @override
   Widget build(BuildContext context) {
@@ -92,48 +91,58 @@ class AttributionView extends GetView<ValidationController> {
                       },
                       // do something with the input numbers
                       onSubmit: () {
-                        debugPrint('Your number: ${controller.pointController.text}');
                         showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
                               content: Text(
-                                "You code is ${controller.pointController.text}",
+                                "You number is ${controller.pointController.text}",
                                 style: const TextStyle(fontSize: 30),
                               ),
                             ));
                       },
                     )
                 ).marginOnly(bottom: 20),
-                InkWell(
-                    onTap: (){
-
-                      if(controller.found.value){
-                        var points = controller.client['client_points'] + int.parse(controller.pointController.text);
-                        if(controller.pointController.text.isNotEmpty){
-                          int partner = int.parse(barcode);
-                          controller.isLoading.value = true;
-                          controller.attributePoints(partner, points);
-                        }else{
-                          controller.noValue.value = true;
-                        }
-                      }else{
-                        Get.showSnackbar(Ui.warningSnackBar(message: "Bien vouloir scanner un code Qr pour continuer!"));
-                      }
-
-                    },
-                    child: Container(
-                        padding: EdgeInsets.all(10),
-                        width: Get.width /2,
-                        height: textFieldHeight,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            color: controller.found.value ? primaryColor : inactive
-                        ),
-                        child: controller.isLoading.value ? Center(
-                          child: SpinKitFadingCircle(color: employeeInterfaceColor, size: 20)
-                        ) : Center(child: Text("ATTRIBUER", style: TextStyle(color: Palette.background, fontSize: 20)))
-                    )
-                )
+                Obx(() {
+                    if(controller.found.value){
+                      return Container(
+                          padding: EdgeInsets.all(10),
+                          width: Get.width /2,
+                          height: textFieldHeight,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                              color: inactive
+                          ),
+                          child: controller.isLoading.value ? Center(
+                              child: SpinKitFadingCircle(color: employeeInterfaceColor, size: 20)
+                          ) : Center(child: Text("ATTRIBUER", style: TextStyle(color: Palette.background, fontSize: 20)))
+                      );
+                    }else{
+                      return InkWell(
+                          onTap: (){
+                            var points = controller.client['client_points'] + int.parse(controller.pointController.text);
+                            if(controller.pointController.text.isNotEmpty){
+                              int partner = int.parse(controller.qrValue.value);
+                              controller.isLoading.value = true;
+                              controller.attributePoints(partner, points);
+                            }else{
+                              controller.noValue.value = true;
+                            }
+                          },
+                          child: Container(
+                              padding: EdgeInsets.all(10),
+                              width: Get.width /2,
+                              height: textFieldHeight,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                                  color: primaryColor
+                              ),
+                              child: controller.isLoading.value ? Center(
+                                  child: SpinKitFadingCircle(color: employeeInterfaceColor, size: 30)
+                              ) : Center(child: Text("ATTRIBUER", style: TextStyle(color: Palette.background, fontSize: 20)))
+                          )
+                      );
+                    }
+                  }),
               ]
             ))
           )

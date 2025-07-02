@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 import '../../../../color_constants.dart';
+import '../../../../common/helper.dart';
 import '../../../../responsive.dart';
 import '../../../services/api_services.dart';
 import '../../auth/controllers/auth_controller.dart';
@@ -41,79 +42,82 @@ class EmployeeHomeView extends GetView<HomeController> {
     Get.lazyPut(()=>BookingsController());
     Get.lazyPut(()=>ValidationController());
 
-    return Scaffold(
-        floatingActionButton: Obx(() => controller.currentPage.value == 0 ? InkWell(
-            onTap: ()=>controller.currentPage.value = 4,
-            child: Container(
-                width: floatingButtonSize,
-                height: floatingButtonSize,
-                decoration: BoxDecoration(
-                    color: Colors.lightBlueAccent,
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: AssetImage('assets/img/qr-code.png'))
-                )
-            )
-        ) : controller.currentPage.value != 4 ?
-        FloatingActionButton(
-              onPressed: (){
-                if(MediaQuery.of(context).orientation == Orientation.portrait)
-                {
-                  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-                }else {
-                  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                }
-              },
-              child: Icon(Icons.screen_rotation),
-            ) : SizedBox()
-        ),
-        appBar: AppBar(
-          backgroundColor: appBarColor,
-          leading: IconButton(
-            icon: Icon(Icons.sort, color: Colors.white),
-            onPressed: ()
-            => showDialog(
-              context: context,
-              builder: (_) {
-                return MainDrawerWidget();
-              },
-            ),
+    return WillPopScope(
+      onWillPop: Helper().onWillPop,
+      child: Scaffold(
+          floatingActionButton: Obx(() => controller.currentPage.value == 0 ? InkWell(
+              onTap: ()=>controller.currentPage.value = 4,
+              child: Container(
+                  width: floatingButtonSize,
+                  height: floatingButtonSize,
+                  decoration: BoxDecoration(
+                      color: Colors.lightBlueAccent,
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: AssetImage('assets/img/qr-code.png'))
+                  )
+              )
+          ) : controller.currentPage.value != 4 ?
+          FloatingActionButton(
+                onPressed: (){
+                  if(MediaQuery.of(context).orientation == Orientation.portrait)
+                  {
+                    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+                  }else {
+                    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                  }
+                },
+                child: Icon(Icons.screen_rotation),
+              ) : SizedBox()
           ),
-          title: Obx(() => Text( controller.currentPage.value == 0 ?
-          Domain.AppName+", Tableau de bord" : controller.currentPage.value == 1 ? Domain.AppName+",  Mes rendez-vous"
-              : controller.currentPage.value == 2 ? Domain.AppName+", Facturation" : controller.currentPage.value == 3 ? Domain.AppName+", Interface POS" : Domain.AppName+", Attribuer des points",
-            style: Get.textTheme.headline6.merge(TextStyle(fontSize: textHSize, color: employeeInterfaceColor)),
-          )),
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          actions: [ NotificationsButtonWidget() ],
-        ),
-        backgroundColor: background,
-        body: RefreshIndicator(
+          appBar: AppBar(
+            backgroundColor: appBarColor,
+            leading: IconButton(
+              icon: Icon(Icons.sort, color: Colors.white),
+              onPressed: ()
+              => showDialog(
+                context: context,
+                builder: (_) {
+                  return MainDrawerWidget();
+                },
+              ),
+            ),
+            title: Obx(() => Text( controller.currentPage.value == 0 ?
+            Domain.AppName+", Tableau de bord" : controller.currentPage.value == 1 ? Domain.AppName+",  Mes rendez-vous"
+                : controller.currentPage.value == 2 ? Domain.AppName+", Facturation" : controller.currentPage.value == 3 ? Domain.AppName+", Interface POS" : Domain.AppName+", Attribuer des points",
+              style: Get.textTheme.headline6.merge(TextStyle(fontSize: textHSize, color: employeeInterfaceColor)),
+            )),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+            actions: [ NotificationsButtonWidget() ],
+          ),
+          backgroundColor: background,
+          body: RefreshIndicator(
 
-            onRefresh: ()=> controller.initValues(),
+              onRefresh: ()=> controller.initValues(),
 
-            child: FutureBuilder<bool>(
-              future: controller.getData(),
-              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                if (!snapshot.hasData) {
-                  return const SizedBox();
-                } else {
+              child: FutureBuilder<bool>(
+                future: controller.getData(),
+                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                  if (!snapshot.hasData) {
+                    return const SizedBox();
+                  } else {
 
-                  return SizedBox(
-                    height: Get.height,
-                    width: Get.width,
-                    child: Obx(() => controller.currentPage.value == 0 ? build_dashboardView(context)
-                        : controller.currentPage.value == 1 ? BookingsView()
-                        : controller.currentPage.value == 2 ? EmployeeReceipt()
-                        : controller.currentPage.value == 3 ? InterfacePOSView()
-                        : AttributionView()
-                    )
-                  );
+                    return SizedBox(
+                      height: Get.height,
+                      width: Get.width,
+                      child: Obx(() => controller.currentPage.value == 0 ? build_dashboardView(context)
+                          : controller.currentPage.value == 1 ? BookingsView()
+                          : controller.currentPage.value == 2 ? EmployeeReceipt()
+                          : controller.currentPage.value == 3 ? InterfacePOSView()
+                          : AttributionView()
+                      )
+                    );
+                  }
                 }
-              }
-            )
-        )
+              )
+          )
+      ),
     );
   }
 

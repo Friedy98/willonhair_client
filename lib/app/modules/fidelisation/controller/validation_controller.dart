@@ -23,6 +23,7 @@ class ValidationController extends GetxController {
   var found = false.obs;
   var noValue = false.obs;
   var scanned = false.obs;
+  var qrValue = "".obs;
   TextEditingController pointController = TextEditingController();
 
   @override
@@ -37,8 +38,8 @@ class ValidationController extends GetxController {
     try {
       ScanResult qrCode = await BarcodeScanner.scan();
       String qrResult = qrCode.rawContent;
+      qrValue.value = qrResult;
       //setState(() => barcode = qrResult);
-      print(qrResult);
       var user = await getUserInfo(qrResult);
       client.value = user;
 
@@ -78,10 +79,9 @@ class ValidationController extends GetxController {
 
   void attributePoints(int partner, var point) async{
     var headers = {
-      'Content-Type': 'application/json',
-      'Cookie': 'frontend_lang=fr_FR; session_id=6d065737e3cc1153d3a20eaf7fadf96f0f58b31e; visitor_uuid=fcef730c94854dfc991dcde26c242a3e'
+      'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://willonhair.shintheo.com/fidelity/partner/$partner/points/$point'));
+    var request = http.Request('POST', Uri.parse('${Domain.serverAddress}/fidelity/partner/$partner/points/$point'));
     request.body = json.encode({
       "jsonrpc": "2.0"
     });
@@ -94,6 +94,7 @@ class ValidationController extends GetxController {
       Get.showSnackbar(Ui.InfoSnackBar(message: "Nombre de point mise a jour avec succès"));
     }
     else {
+      isLoading.value = false;
       Get.showSnackbar(Ui.ErrorSnackBar(message: "Une érreur est survenue!"));
     }
   }
