@@ -10,6 +10,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'app/models/notification_model.dart';
 import 'app/providers/firebase_provider.dart';
 import 'app/routes/theme1_app_pages.dart';
@@ -94,6 +95,9 @@ void main() async {
     name: 'willonhair-v3',
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final packageInfo = await PackageInfo.fromPlatform();
+
+  Domain.packageInfo = packageInfo;
   await initServices();
 
    await Hive.initFlutter();

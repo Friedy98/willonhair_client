@@ -5,9 +5,9 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class Domain{
-  static var serverPort = "http://51.91.252.155:8069/api/v1";
-  static var serverPort2 = "http://51.91.252.155:8069/api";
-  static var serverAddress = "http://51.91.252.155:8069";
+  static var serverPort = "https://vps-07ed669e.vps.ovh.net/api/v1";
+  static var serverPort2 = "https://vps-07ed669e.vps.ovh.net/api";
+  static var serverAddress = "https://vps-07ed669e.vps.ovh.net";
 
   static PackageInfo packageInfo;
 

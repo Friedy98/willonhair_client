@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../color_constants.dart';
 import '../../../../common/ui.dart';
 import '../../../routes/app_routes.dart';
@@ -46,19 +45,15 @@ class AuthController extends GetxController {
   var currentUser = {}.obs;
   var appointmentIds = [].obs;
 
-  PackageInfo packageInfo;
-
   @override
   void onInit() async {
 
     getRecentUser();
-    super.onInit();
-    packageInfo = await PackageInfo.fromPlatform();
 
+    super.onInit();
   }
 
   getRecentUser()async{
-
     var box = await GetStorage();
     if(box.read('checkBox') != null){
       isChecked.value = box.read('checkBox');
@@ -295,6 +290,7 @@ class AuthController extends GetxController {
 
   Future login(String role) async {
 
+    Get.put(BookingsController());
     final BookingsController controller = Get.find<BookingsController>();
     var box = GetStorage();
     isEmployee.value = false;
@@ -339,7 +335,7 @@ class AuthController extends GetxController {
 
         }else{
 
-          var foundDeviceToken= false;
+          /*var foundDeviceToken= false;
 
           if(partner['fcm_token_ids'].isNotEmpty) {
             var tokensList = await getUserDeviceTokens(partner['fcm_token_ids']);
@@ -348,7 +344,7 @@ class AuthController extends GetxController {
                 foundDeviceToken = true;
               }
             }
-          }
+          }*/
 
           /*if(!foundDeviceToken){
           await saveDeviceToken(Domain.deviceToken, partnerData[0]['id']);
