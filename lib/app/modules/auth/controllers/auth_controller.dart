@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../color_constants.dart';
 import '../../../../common/ui.dart';
 import '../../../routes/app_routes.dart';
 import '../../../services/api_services.dart';
 import '../../../services/my_auth_service.dart';
+import '../../home/controllers/home_controller.dart';
 import '../../userBookings/controllers/bookings_controller.dart';
 
 class AuthController extends GetxController {
@@ -26,9 +26,9 @@ class AuthController extends GetxController {
   var name = "".obs;
   var email = TextEditingController();
   var password = TextEditingController();
-  var emailAddress = "".obs;
-  var pass = "".obs;
+  var emailAddress = ''.obs;
   var phone = ''.obs;
+  var pass = ''.obs;
 
   var userId = 0.obs;
   var isChecked = false.obs;
@@ -46,14 +46,11 @@ class AuthController extends GetxController {
   var currentUser = {}.obs;
   var appointmentIds = [].obs;
 
-  PackageInfo packageInfo;
-
   @override
   void onInit() async {
 
     getRecentUser();
     super.onInit();
-    packageInfo = await PackageInfo.fromPlatform();
 
   }
 
@@ -65,9 +62,10 @@ class AuthController extends GetxController {
     }
     if(isChecked.value){
 
-      print("${box.read('userEmail')} and ${box.read('password')}");
       email.text = box.read('userEmail');
       password.text = box.read('password');
+      emailAddress.value = email.text;
+      pass.value = password.text;
 
     }else{
       box.remove("userEmail");
@@ -132,9 +130,9 @@ class AuthController extends GetxController {
           }
 
           loading.value = false;
-          *//*if(!foundDeviceToken){
+          if(!foundDeviceToken){
             await saveDeviceToken(Domain.deviceToken, Get.find<MyAuthService>().myUser.value.id);
-          }*//*
+          }
           Get.showSnackbar(Ui.SuccessSnackBar(message: "You signed in successfully " ));
           await Get.toNamed(Routes.ROOT);
 
@@ -152,9 +150,9 @@ class AuthController extends GetxController {
         }
       }
     }
-  }*/
+  }
 
-  /*createGoogleUser(String name, String email, String phone ) async {
+  createGoogleUser(String name, String email, String phone ) async {
     this.email.value = email;
     this.name.value = name;
     print(name);
@@ -231,7 +229,7 @@ class AuthController extends GetxController {
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
-      Get.showSnackbar(Ui.SuccessSnackBar(message: "An email has been sent to ${email.value}, please follow the instructions to reset your password".tr ));
+      Get.showSnackbar(Ui.SuccessSnackBar(message: "An email has been sent to ${email.text}, please follow the instructions to reset your password".tr ));
       onClick.value = false;
     }
     else {
@@ -269,7 +267,6 @@ class AuthController extends GetxController {
               foundDeviceToken = true;
             }
           }
-
         }
 /*
         if(!foundDeviceToken){
@@ -294,6 +291,9 @@ class AuthController extends GetxController {
   }
 
   Future login(String role) async {
+
+    Get.put(BookingsController());
+    Get.put(HomeController());
 
     final BookingsController controller = Get.find<BookingsController>();
     var box = GetStorage();
@@ -326,7 +326,6 @@ class AuthController extends GetxController {
 
       if(data != null){
 
-        currentUser.value = data;
         var partner = await controller.getCurrentUser(data['partner_id']);
 
         if(role == "client"){
@@ -339,7 +338,7 @@ class AuthController extends GetxController {
 
         }else{
 
-          var foundDeviceToken= false;
+          /*var foundDeviceToken= false;
 
           if(partner['fcm_token_ids'].isNotEmpty) {
             var tokensList = await getUserDeviceTokens(partner['fcm_token_ids']);
@@ -350,7 +349,7 @@ class AuthController extends GetxController {
             }
           }
 
-          /*if(!foundDeviceToken){
+          if(!foundDeviceToken){
           await saveDeviceToken(Domain.deviceToken, partnerData[0]['id']);
         }*/
 
@@ -422,11 +421,12 @@ class AuthController extends GetxController {
                             },
                                 child: Text("Client", style: Get.textTheme.headline2)),
                             SizedBox(width: 10),
-                            TextButton(onPressed: () {
+                            TextButton(onPressed: ()async {
                               isEmployee.value = true;
                               box.write("userData", employee);
                               Navigator.pop(Get.context);
                               Get.showSnackbar(Ui.SuccessSnackBar(message: "connexion réussi, bon retour M/Mme ${employee['display_name']}"));
+                              await Get.find<HomeController>().initValues();
                               Get.toNamed(Routes.EMPLOYEE_HOME);
                             },
                                 child: Text("employee", style: Get.textTheme.headline2)),
@@ -466,8 +466,8 @@ class AuthController extends GetxController {
     };
     var request = http.Request('POST',Uri.parse('${Domain.serverPort}/create/res.users?values={ '
         '"name": "${name.value}",'
-        '"login": "${email.value}",'
-        '"password": "${password.value}",'
+        '"login": "${email.text}",'
+        '"password": "${password.text}",'
         '"sel_groups_1_9_10": 1}'
     ));
 
@@ -476,7 +476,7 @@ class AuthController extends GetxController {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200)  {
-      getUserByEmail(email.value, "signup");
+      getUserByEmail(email.text, "signup");
     }
     else {
       print(response.reasonPhrase);
@@ -535,7 +535,7 @@ class AuthController extends GetxController {
       'Authorization': Domain.authorization
     };
     var request = http.Request('PUT', Uri.parse('${Domain.serverPort}/write/res.partner?ids=$id&values={'
-        '"email": "${email.value}",'
+        '"email": "${email.text}",'
         '"phone": "${phone.value}",'
         '"mobile": "${phone.value}",'
         '}'

@@ -18,6 +18,7 @@ class RegisterView extends GetView<AuthController> {
   var selectedPiece = "Select an identity piece".obs;
   var selectedGender = "Select your gender".obs;
 
+  var riKey1 = new GlobalObjectKey<FormState>(1);
 
   var genderList = [
     'Select your gender'.tr,
@@ -39,7 +40,7 @@ class RegisterView extends GetView<AuthController> {
       onWillPop: Helper().onWillPop,
       child: Scaffold(
         body: Form(
-          key: Domain.riKey1,
+          key: riKey1,
           child: ListView(
             primary: true,
             children: [
@@ -133,7 +134,7 @@ class RegisterView extends GetView<AuthController> {
                           labelText: "Adresse mail".tr,
                           hintText: "johndoe@gmail.com".tr,
                           readOnly: false,
-                          onChanged: (value) => controller.emailAddress.value = value,
+                          kController: controller.email,
                           onSaved: (input) => controller.email.text = input,
                           validator: (input) => !input.contains('@') ? "Should be a valid email".tr : null,
                           iconData: Icons.alternate_email,
@@ -141,13 +142,10 @@ class RegisterView extends GetView<AuthController> {
 
                         Obx(() {
                           return TextFieldWidget(
-                            onChanged: (newValue){
-                              controller.pass.value = newValue;
-                            },
                             labelText: "Password".tr,
                             hintText: "••••••••••••".tr,
                             readOnly: false,
-                            onSaved: (input) => controller.pass.value = input,
+                            kController: controller.password,
                             validator: (input) => input.length < 3 ? "Should be more than 3 characters".tr : null,
                             obscureText: controller.hidePassword.value,
                             iconData: Icons.lock_outline,
@@ -165,12 +163,12 @@ class RegisterView extends GetView<AuthController> {
                         Obx(() {
                           return TextFieldWidget(
                             onChanged: (newValue){
-                              if(newValue!=controller.pass.value){
+                              if(newValue!=controller.password.text){
 
                                 controller.confirmPassword.value = 'password not matching';
                               }
                               else{
-                                controller.confirmPassword.value = controller.pass.value;
+                                controller.confirmPassword.value = controller.password.text;
                               }
                             },
                             labelText: "Confirm Password".tr,
@@ -236,8 +234,8 @@ class RegisterView extends GetView<AuthController> {
                     color: controller.accepted.value ? interfaceColor : interfaceColor.withOpacity(0.3),
                     onPressed: controller.accepted.value ? () async{
 
-                      if(Domain.riKey1.currentState.validate()){
-                        if(controller.password.value == controller.confirmPassword.value)
+                      if(riKey1.currentState.validate()){
+                        if(controller.password.text == controller.confirmPassword.value)
                         {
                           await controller.register();
                         }
@@ -247,7 +245,7 @@ class RegisterView extends GetView<AuthController> {
                     text: !controller.loading.value?Text(
                       "SOUMETRE".tr,
                       style: Get.textTheme.headline4.merge(TextStyle(color: Get.theme.primaryColor)),
-                    ): SizedBox(height: 20,
+                    ): SizedBox(height: 30,
                         child: SpinKitFadingCircle(color: Colors.white, size: 30)), loginPage: false,
                   ).paddingOnly(top: 15, bottom: 5, right: 20, left: 20),
                 ),
@@ -263,7 +261,8 @@ class RegisterView extends GetView<AuthController> {
                       child: Text("connexion",style: TextStyle(fontFamily: "poppins",fontSize: 15, color: Colors.blueAccent)),
                     ),
 
-                  ],                ).paddingOnly(bottom: 10)
+                  ],
+                ).paddingOnly(bottom: 10)
               ],
             ),
           ],

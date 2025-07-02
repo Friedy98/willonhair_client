@@ -71,7 +71,6 @@ class ForgotPasswordView extends GetView<AuthController> {
                         readOnly: false,
                         hintText: "johndoe@gmail.com".tr,
                         kController: controller.email,
-                        onChanged: (value)=> controller.emailAddress.value = value,
                         onSaved: (input) => controller.email.text = input,
                         validator: (input) => !GetUtils.isEmail(input) ? "Should be a valid email".tr : null,
                         iconData: Icons.alternate_email,

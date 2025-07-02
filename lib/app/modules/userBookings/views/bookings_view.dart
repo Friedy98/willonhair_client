@@ -96,7 +96,7 @@ class BookingsView extends GetView<BookingsController> {
                                         borderSide: BorderSide(width: 1, color: buttonColor),
                                         borderRadius: BorderRadius.circular(10.0),
                                       ),
-                                      hintText: "Search here...",
+                                      hintText: "Recherche par nom du client",
                                       filled: true,
                                       fillColor: Colors.white,
                                       suffixIcon: Icon(Icons.search),

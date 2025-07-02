@@ -230,16 +230,20 @@ class BookingsController extends GetxController {
     );
     //var data = await getCategories();
     //allCategories.value = data;
+
+    isLoading.value = true;
+
     final box = GetStorage();
     var userdata = box.read("userData");
     userDto.value = userdata;
-    print(userDto);
+    var partner = await getCurrentUser(userdata['partner_id']);
 
     if(Get.find<AuthController>().isEmployee.value){
       getAppointments(userDto['appointment_ids']);
     }else{
-      var list = Get.find<AuthController>().appointmentIds;
-      await getAppointments(list);
+
+      print("appointments : ${partner['appointment_ids']}");
+      await getAppointments(partner['appointment_ids']);
     }
   }
 
@@ -341,8 +345,9 @@ class BookingsController extends GetxController {
 
     if (response.statusCode == 200) {
       final data = await response.stream.bytesToString();
-      print(data);
+      print(json.decode(data)[0]['service_ids']);
       if(data.isNotEmpty){
+        allCategories.value = json.decode(data);
         getServiceByCategory(json.decode(data)[0]['service_ids']);
       }
 
@@ -355,7 +360,6 @@ class BookingsController extends GetxController {
 
   getServiceByCategory(var values)async{
     var ids = values.join(",");
-    print(ids);
     var headers = {
       'Cookie': 'frontend_lang=fr_FR; session_id=bb097a3095a1d281f01592bd331b9c8f9c8631bd; visitor_uuid=fcef730c94854dfc991dcde26c242a3e'
     };
@@ -370,6 +374,7 @@ class BookingsController extends GetxController {
       isLoading.value = false;
       origin.value = json.decode(data);
       servicesByCategory.value = json.decode(data);
+      print(servicesByCategory);
     }
     else {
       print(response.reasonPhrase);
@@ -401,8 +406,6 @@ class BookingsController extends GetxController {
 
   getAppointments(var ids)async{
 
-    isLoading.value = true;
-
     var headers = {
       'Accept': 'application/json',
       'Authorization': Domain.authorization
@@ -418,7 +421,7 @@ class BookingsController extends GetxController {
       items.value = json.decode(data);
       sample = json.decode(data);
       isLoading.value = false;
-      //return json.decode(data);
+      return json.decode(data);
     }
     else {
       print(response.reasonPhrase);

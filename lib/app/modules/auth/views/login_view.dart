@@ -85,7 +85,6 @@ class LoginView extends GetView<AuthController> {
                         kController: controller.email,
                         keyboardType: TextInputType.emailAddress,
                         //onSaved: (input) => controller.currentUser.value.email = input,
-                        onChanged: (value) => controller.emailAddress.value = value,
                         validator: (input) => input.length < 3 ? "Should be a valid email" : null,
                         iconData: Icons.alternate_email,
                       ),
@@ -96,7 +95,6 @@ class LoginView extends GetView<AuthController> {
                           readOnly: false,
                           kController: controller.password,
                           //onSaved: (input) => controller.currentUser.value.password = input,
-                          onChanged: (value) => controller.pass.value = value,
                           validator: (input) => input.length < 3 ? "Should be more than 3 characters" : null,
                           obscureText: controller.hidePassword.value,
                           iconData: Icons.lock_outline,
@@ -137,9 +135,6 @@ class LoginView extends GetView<AuthController> {
                         onPressed: ()async{
                           if(controller.email.text.isNotEmpty && controller.password.text.isNotEmpty){
 
-                            controller.email.text = controller.emailAddress.value;
-                            controller.password.text = controller.pass.value;
-
                             await controller.login("client");
 
                             var box = await GetStorage();
@@ -175,7 +170,7 @@ class LoginView extends GetView<AuthController> {
                         ): SizedBox(height: 30,
                             child: SpinKitFadingCircle(color: Colors.white, size: 30)),
                         loginPage: true,
-                        color: controller.email.text.isNotEmpty && controller.password.text.isNotEmpty ?
+                        color: controller.emailAddress.value.isNotEmpty && controller.pass.value.isNotEmpty ?
                         Responsive.isTablet(context) ? employeeInterfaceColor : interfaceColor : Responsive.isTablet(context)
                             ? employeeInterfaceColor.withOpacity(0.3) : interfaceColor.withOpacity(0.3),
                       ).paddingSymmetric(vertical: 10, horizontal: 20),),

@@ -54,7 +54,7 @@ class ValidationController extends GetxController {
             builder: (_){
               return AlertDialog(
                 title: Text(client['name'], style: TextStyle(fontSize: 16)),
-                content: Text("Le client ${client['name']} a ${client['client_points']} points de fidelté et ${client['client_bonus']} poinnts de bonus",
+                content: Text("Le client ${client['name']} a ${client['client_points']} points de fidelté et ${client['client_bonus']} points de bonus",
                     style: TextStyle(fontSize: 12, color: Colors.black)),
                 actions: [
                   Row(

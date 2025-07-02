@@ -75,6 +75,7 @@ void initServices() async {
   await Get.putAsync(() => SettingsService().init());
   //await Get.putAsync(() => TranslationService().init());
   Get.log('All services started...');
+  await Domain.initPackageInfo();
 
   final box = GetStorage();
 }

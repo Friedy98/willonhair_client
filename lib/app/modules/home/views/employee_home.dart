@@ -27,7 +27,6 @@ class EmployeeHomeView extends GetView<HomeController> {
   double dataRowHeight = Responsive.isMobile(Get.context) ? 40 : 80;
   double headingRowHeight = Responsive.isMobile(Get.context) ? 30 : 60;
   double dataRowWidth = Responsive.isMobile(Get.context) ? 40 : 80;
-  double minWith = Responsive.isMobile(Get.context) ? 600 : 800;
   double size = Responsive.isMobile(Get.context) ? 20 : 40;
   double floatingButtonSize = Responsive.isMobile(Get.context) ? 70 : 100;
 
@@ -214,7 +213,7 @@ class EmployeeHomeView extends GetView<HomeController> {
             child: DataTable2(
               columnSpacing: defaultPadding,
               headingRowColor: MaterialStateColor.resolveWith((states) => appBarColor),
-              minWidth: minWith,
+              minWidth: 800,
               headingRowHeight: headingRowHeight,
               dataRowHeight: dataRowHeight,
               showCheckboxColumn: false,

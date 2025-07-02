@@ -6,13 +6,18 @@ import 'package:intl/intl.dart' show DateFormat;
 
 import '../../../../color_constants.dart';
 import '../../../../common/animation_controllers/animation.dart';
+import '../../../../responsive.dart';
 import '../../../services/api_services.dart';
 import '../controllers/bookings_controller.dart';
 
 class BookingsListItemWidget extends GetView<BookingsController> {
 
+
   @override
   Widget build(BuildContext context) {
+
+    double size = Responsive.isMobile(context) ? 35 : 50;
+    double width = Responsive.isMobile(context) ? MediaQuery.of(context).size.width / 2 : MediaQuery.of(context).size.width / 4;
 
     var data = [];
     for(var a in controller.items){
@@ -25,7 +30,7 @@ class BookingsListItemWidget extends GetView<BookingsController> {
     return DelayedAnimation(
         delay: 50,
         child: Container(
-            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 3, right: 0),
+            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width / 4, right: 0),
             child: Drawer(
                 backgroundColor: Palette.background,
                 child: Obx(() => Column(
@@ -40,10 +45,12 @@ class BookingsListItemWidget extends GetView<BookingsController> {
                             },
                             icon: Icon(Icons.arrow_back_ios_rounded)
                         ),
-                        Text(" Tous les Rendez-Vous", style: TextStyle(color: appColor, fontSize: 17, fontWeight: FontWeight.bold)),
-                        Spacer(),
+                        if(!Responsive.isMobile(context))...[
+                          Text(" Tous les Rendez-Vous", style: TextStyle(color: appColor, fontSize: 17, fontWeight: FontWeight.bold)),
+                          Spacer(),
+                        ],
                         Container(
-                            width: MediaQuery.of(context).size.width / 4,
+                            width: width,
                             height: 40,
                             child: TextFormField(
                               //controller: dateController,
@@ -52,7 +59,7 @@ class BookingsListItemWidget extends GetView<BookingsController> {
                                 contentPadding: EdgeInsets.only(top: 10),
                                 fillColor: background,
                                 prefixIcon: Icon(Icons.search),
-                                hintText: "Rechercher...",
+                                hintText: "Rechercher par nom du client",
                                 hintStyle: TextStyle(
                                   fontSize: 12,
                                   color: Theme
@@ -92,24 +99,22 @@ class BookingsListItemWidget extends GetView<BookingsController> {
                                     onTap: ()async{
 
                                       controller.selectedAppointment.value = list[index];
-                                      controller.getAppointmentOrder(list[index]['order_id'][0]);
+                                      print(list[index]['order_id']);
+                                      if(list[index]['order_id'] != null){
+                                        controller.getAppointmentOrder(list[index]['order_id'][0]);
+                                      }
+
                                       Navigator.pop(context);
                                       //getOrder(controller.items[index]['order_id'][0]['id'], );
                                     },
-                                    child: Container(
-                                      padding: EdgeInsets.only(top: 5, bottom: 10, left: 15, right: 15),
+                                    child: Card(
                                       margin: EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                          border: Border(
-                                            bottom: BorderSide(color: appColor),
-                                          )
-                                      ),
                                       child: Row(
                                         children: [
                                           ClipOval(
                                               child: FadeInImage(
-                                                width: 50,
-                                                height: 50,
+                                                width: size,
+                                                height: size,
                                                 fit: BoxFit.cover,
                                                 image: Domain.googleUser ? NetworkImage(Domain.googleImage) : NetworkImage('${Domain.serverPort}/image/res.partner/${list[index]['partner_id'][0]}/image_1920?unique=true&file_response=true', headers: Domain.getTokenHeaders()),
                                                 placeholder: AssetImage(
@@ -118,8 +123,8 @@ class BookingsListItemWidget extends GetView<BookingsController> {
                                                     (context, error, stackTrace) {
                                                   return Image.asset(
                                                       'assets/img/téléchargement (3).png',
-                                                      width: 50,
-                                                      height: 50,
+                                                      width: size,
+                                                      height: size,
                                                       fit: BoxFit.fitWidth);
                                                 },
                                               )
@@ -138,6 +143,10 @@ class BookingsListItemWidget extends GetView<BookingsController> {
                                             ),
                                           ),
                                           Spacer(),
+                                          Responsive.isMobile(context) ?
+                                          Text(list[index]['service_id'][1].split(">").first,
+                                              style: TextStyle(fontSize: 15, color: employeeInterfaceColor)).marginOnly(right: 10)
+                                              :
                                           Container(
                                               width: 200,
                                               height: 50,
@@ -147,7 +156,8 @@ class BookingsListItemWidget extends GetView<BookingsController> {
                                               ),
                                               padding: EdgeInsets.all(5),
                                               child: Center(
-                                                child: Text(list[index]['service_id'][1].split(">").first, style: TextStyle(fontSize: 15, color: employeeInterfaceColor)),
+                                                child: Text(list[index]['service_id'][1].split(">").first,
+                                                    style: TextStyle(fontSize: 15, color: employeeInterfaceColor)),
                                               )
                                           )
                                         ]

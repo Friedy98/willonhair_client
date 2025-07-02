@@ -38,6 +38,8 @@ class HomeController extends GetxController {
   var cancel = 0.0.obs;
   Timer timer;
 
+  final box = GetStorage();
+
   HomeController() {
     //_sliderRepo = new SliderRepository();
     //_categoryRepository = new CategoryRepository();
@@ -54,13 +56,10 @@ class HomeController extends GetxController {
 
   getUserDto()async{
     setData();
-    final box = GetStorage();
     final userdata = box.read('userData');
     userId.value = userdata['partner_id'];
 
-    if(Get.find<AuthController>().isEmployee.value){
-      initValues();
-    }else{
+    if(!Get.find<AuthController>().isEmployee.value){
       var data = await getUserInfo(userId.value);
       userDto.value = data;
       userName.value = data['display_name'];
@@ -77,14 +76,13 @@ class HomeController extends GetxController {
 
   initValues()async{
     Get.lazyPut(() => BookingsController());
-    final box = GetStorage();
-    final userdata = box.read('userData');
 
     var plannedList = [];
     var doneList = [];
     var missedList = [];
     var cancelList = [];
 
+    final userdata = box.read('userData');
     var data = await Get.find<BookingsController>().getAppointments(userdata['appointment_ids']);
 
     for(var i in data){
@@ -115,14 +113,14 @@ class HomeController extends GetxController {
     Get.lazyPut(() => BookingsController());
     final box = GetStorage();
     final userdata = box.read('userData');
-    var value = await getEmployeeData(userdata['id']);
+    var user = await getEmployeeData(userdata['id']);
 
     var plannedList = [];
     var doneList = [];
     var missedList = [];
     var cancelList = [];
 
-    var data = await Get.find<BookingsController>().getAppointments(value['appointment_ids']);
+    var data = await Get.find<BookingsController>().getAppointments(user['appointment_ids']);
 
     for(var i in data){
       if(i['state'] == "reserved"){
