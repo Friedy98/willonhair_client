@@ -13,6 +13,7 @@ class ValidationController extends GetxController {
 
   final isDone = false.obs;
   var isLoading = false.obs;
+  var loadingUser = false.obs;
   final currentState = 0.obs;
   final validationType = 0.obs;
   var shipping = [].obs;
@@ -42,6 +43,7 @@ class ValidationController extends GetxController {
       //setState(() => barcode = qrResult);
       var user = await getUserInfo(qrResult);
       client.value = user;
+      loadingUser.value = false;
 
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
@@ -57,6 +59,7 @@ class ValidationController extends GetxController {
   }
 
   Future getUserInfo(var id)async{
+    loadingUser.value = true;
     var headers = {
       'Accept': 'application/json',
       'Authorization': Domain.authorization,
@@ -91,11 +94,15 @@ class ValidationController extends GetxController {
 
     if (response.statusCode == 200) {
       isLoading.value = false;
+      pointController.clear();
       Get.showSnackbar(Ui.InfoSnackBar(message: "Nombre de point mise a jour avec succès"));
     }
     else {
       isLoading.value = false;
-      Get.showSnackbar(Ui.ErrorSnackBar(message: "Une érreur est survenue!"));
+      pointController.clear();
+      var result = await response.stream.bytesToString();
+      print(result);
+      Get.showSnackbar(Ui.ErrorSnackBar(message: "Une érreur est survenue !"));
     }
   }
 

@@ -400,9 +400,15 @@ class AuthController extends GetxController {
           }
         }
         if(employee != null){
+
           currentUser.value = employee;
           employeeLoading.value = false;
-          showDialog(
+          isEmployee.value = true;
+          box.write("userData", employee);
+          Get.showSnackbar(Ui.SuccessSnackBar(message: "connexion réussi, bon retour M/Mme ${employee['display_name']}"));
+          await Get.find<HomeController>().initValues();
+          Get.toNamed(Routes.EMPLOYEE_HOME);
+          /*showDialog(
               context: (Get.context),
               builder: (_){
                 return AlertDialog(
@@ -434,7 +440,7 @@ class AuthController extends GetxController {
                       )
                     ]
                 );
-              });
+              });*/
 
         }else{
           box.write("userData", user);

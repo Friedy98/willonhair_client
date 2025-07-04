@@ -15,7 +15,7 @@ class AttributionView extends GetView<ValidationController> {
   double textHSize = Responsive.isMobile(Get.context) ? 16 : 30;
   double buttonSize = Responsive.isMobile(Get.context) ? 80 : 120;
   double floatingButtonSize = Responsive.isMobile(Get.context) ? 70 : 100;
-  double height = Responsive.isMobile(Get.context) ? 40 : 60;
+  double height = Responsive.isMobile(Get.context) ? 10 : 60;
   double textFieldHeight = Responsive.isMobile(Get.context) ? 50 : 80;
   List bookings = [];
 
@@ -49,10 +49,12 @@ class AttributionView extends GetView<ValidationController> {
             child: Obx(() => Column(
               children: [
                 SizedBox(height: height),
+                controller.loadingUser.value ?
+                SpinKitFadingCircle(color: primaryColor, size: 30) :
                 controller.found.value ?
                   ListTile(
-                    title: Text(controller.client['name'], style: Get.textTheme.headline4.merge(TextStyle(fontSize: textSize))),
-                    subtitle: Text("Points: ${controller.client['client_points']}, Bonus: ${controller.client['client_bonus']}", style: Get.textTheme.headline2.merge(TextStyle(fontSize: 20))),
+                    title: Text(controller.client['name'].toString(), style: Get.textTheme.headline4.merge(TextStyle(fontSize: textSize))),
+                    subtitle: Text("Points: ${controller.client['client_points'].toString()}, Bonus: ${controller.client['client_bonus'].toString()}", style: Get.textTheme.headline2.merge(TextStyle(fontSize: 20))),
                   ) : ListTile(
                   leading: Icon(Icons.info_outline, size: 30,),
                   title: Text("Scanner le code Qr pour attribuer des points", style: Get.textTheme.headline4.merge(TextStyle(fontSize: textSize))),
@@ -79,7 +81,7 @@ class AttributionView extends GetView<ValidationController> {
                 Container(
                     padding: EdgeInsets.symmetric(vertical: 30),
                     width: Get.width/1.15,
-                    height: Get.height/2,
+                    height: Get.height/1.8,
                     child: NumPad(
                       buttonSize: buttonSize,
                       buttonColor: Colors.white,
@@ -102,47 +104,35 @@ class AttributionView extends GetView<ValidationController> {
                       },
                     )
                 ).marginOnly(bottom: 20),
-                Obx(() {
-                    if(controller.found.value){
-                      return Container(
-                          padding: EdgeInsets.all(10),
-                          width: Get.width /2,
-                          height: textFieldHeight,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(5)),
-                              color: inactive
-                          ),
-                          child: controller.isLoading.value ? Center(
-                              child: SpinKitFadingCircle(color: employeeInterfaceColor, size: 20)
-                          ) : Center(child: Text("ATTRIBUER", style: TextStyle(color: Palette.background, fontSize: 20)))
-                      );
-                    }else{
-                      return InkWell(
-                          onTap: (){
-                            var points = controller.client['client_points'] + int.parse(controller.pointController.text);
-                            if(controller.pointController.text.isNotEmpty){
-                              int partner = int.parse(controller.qrValue.value);
-                              controller.isLoading.value = true;
-                              controller.attributePoints(partner, points);
-                            }else{
-                              controller.noValue.value = true;
-                            }
-                          },
-                          child: Container(
-                              padding: EdgeInsets.all(10),
-                              width: Get.width /2,
-                              height: textFieldHeight,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                                  color: primaryColor
-                              ),
-                              child: controller.isLoading.value ? Center(
-                                  child: SpinKitFadingCircle(color: employeeInterfaceColor, size: 30)
-                              ) : Center(child: Text("ATTRIBUER", style: TextStyle(color: Palette.background, fontSize: 20)))
-                          )
-                      );
-                    }
-                  }),
+                InkWell(
+                    onTap: (){
+                      controller.noValue.value = false;
+                      if(controller.found.value){
+                        if(controller.pointController.text.isNotEmpty){
+                          var points = controller.client['client_points'] + int.parse(controller.pointController.text);
+                          int partner = int.parse(controller.qrValue.value);
+                          controller.isLoading.value = true;
+                          controller.attributePoints(partner, points);
+                        }else{
+                          controller.noValue.value = true;
+                        }
+                      }else{
+                        Get.showSnackbar(Ui.warningSnackBar(message: "Veuillez scanner le code du client"));
+                      }
+                    },
+                    child: Container(
+                        padding: EdgeInsets.all(10),
+                        width: Get.width /2,
+                        height: textFieldHeight,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            color: primaryColor
+                        ),
+                        child: controller.isLoading.value ? Center(
+                            child: SpinKitFadingCircle(color: Colors.white, size: 30)
+                        ) : Center(child: Text("ATTRIBUER", style: TextStyle(color: Palette.background, fontSize: 20)))
+                    )
+                )
               ]
             ))
           )

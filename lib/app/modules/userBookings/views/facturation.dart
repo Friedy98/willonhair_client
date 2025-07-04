@@ -163,6 +163,10 @@ class EmployeeReceipt extends GetView<BookingsController> {
                     var difference = daysBetween(start, end);
 
                     return DataRow(
+                        color: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                          // Ligne paire = couleur claire, ligne impaire = couleur foncée
+                          return index.isEven ? Colors.grey[200] : Colors.white;
+                        }),
                         onSelectChanged: (value)async{
                           var invoiceLine = [];
                           invoiceLine = await controller.getInvoiceLine(controller.receipts[index]['invoice_line_ids']);

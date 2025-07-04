@@ -24,7 +24,7 @@ class HomeController extends GetxController {
   var userBonus = 0.obs;
   var currentPage= 0.obs;
   var points = 0.obs;
-  var clientPoint = 5.obs;
+  var clientPoint = 0.obs;
   var userId = 0.obs;
   var userName = "".obs;
   List<HomeList> homeList = HomeList.homeList;
@@ -397,8 +397,11 @@ class HomeController extends GetxController {
                       child: Text("Traiter le rendez-vous"),
                       onPressed: (){
                         Get.lazyPut(()=>BookingsController());
+                        print(appointment["order_id"]);
                         Get.find<BookingsController>().selectedAppointment.value = appointment;
-                        Get.find<BookingsController>().getAppointmentOrder(appointment["order_id"][0]);
+                        if(appointment["order_id"] != null){
+                          Get.find<BookingsController>().getAppointmentOrder(appointment["order_id"][0]);
+                        }
                         Get.find<BookingsController>().refreshBookings();
                         currentPage.value = 3;
                         Navigator.pop(Get.context);

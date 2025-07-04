@@ -242,7 +242,7 @@ class BookingsController extends GetxController {
       getAppointments(userDto['appointment_ids']);
     }else{
 
-      print("appointments : ${partner['appointment_ids']}");
+      //print("appointments : ${partner['appointment_ids']}");
       await getAppointments(partner['appointment_ids']);
     }
   }
@@ -374,7 +374,6 @@ class BookingsController extends GetxController {
       isLoading.value = false;
       origin.value = json.decode(data);
       servicesByCategory.value = json.decode(data);
-      print(servicesByCategory);
     }
     else {
       print(response.reasonPhrase);

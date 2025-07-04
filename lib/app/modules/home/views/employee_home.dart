@@ -245,6 +245,10 @@ class EmployeeHomeView extends GetView<HomeController> {
                     var start = DateFormat("dd-MM-yyyy HH:mm").format(DateTime.parse(controller.items[index]['datetime_start'])).toString();
                     var end = DateFormat("HH:mm").format(DateTime.parse(controller.items[index]['datetime_end'])).toString();
                     return DataRow(
+                        color: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                          // Ligne paire = couleur claire, ligne impaire = couleur foncée
+                          return index.isEven ? Colors.grey[200] : Colors.white;
+                        }),
                         onSelectChanged: (value)async{
                           showDialog(
                               context: context,
