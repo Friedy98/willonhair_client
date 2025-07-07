@@ -84,10 +84,8 @@ class ValidationController extends GetxController {
     var headers = {
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('${Domain.serverAddress}/fidelity/partner/$partner/points/$point'));
-    request.body = json.encode({
-      "jsonrpc": "2.0"
-    });
+    var request = http.Request('POST', Uri.parse('${Domain.serverAddress}/user/fidelity/partner/$partner/points/$point'));
+    request.body = json.encode({});
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -95,14 +93,16 @@ class ValidationController extends GetxController {
     if (response.statusCode == 200) {
       isLoading.value = false;
       pointController.clear();
-      Get.showSnackbar(Ui.InfoSnackBar(message: "Nombre de point mise a jour avec succès"));
+      found.value = false;
+      Get.showSnackbar(Ui.SuccessSnackBar(message: "Nombre de point mise a jour avec succès"));
+
     }
     else {
       isLoading.value = false;
       pointController.clear();
       var result = await response.stream.bytesToString();
       print(result);
-      Get.showSnackbar(Ui.ErrorSnackBar(message: "Une érreur est survenue !"));
+      Get.showSnackbar(Ui.ErrorSnackBar(title: response.reasonPhrase, message: "Une érreur est survenue !"));
     }
   }
 

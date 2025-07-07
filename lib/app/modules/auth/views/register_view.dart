@@ -6,7 +6,6 @@ import '../../../../color_constants.dart';
 import '../../../../common/helper.dart';
 import '../../../../common/ui.dart';
 import '../../../routes/app_routes.dart';
-import '../../../services/api_services.dart';
 import '../../global_widgets/block_button_widget.dart';
 import '../../global_widgets/text_field_widget.dart';
 import '../controllers/auth_controller.dart';
@@ -18,8 +17,7 @@ class RegisterView extends GetView<AuthController> {
   var selectedPiece = "Select an identity piece".obs;
   var selectedGender = "Select your gender".obs;
 
-  var riKey1 = new GlobalObjectKey<FormState>(1);
-
+  final GlobalKey<FormState> riKey1 = GlobalKey<FormState>();
   var genderList = [
     'Select your gender'.tr,
     'Male'.tr,

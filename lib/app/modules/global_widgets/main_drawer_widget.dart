@@ -31,6 +31,7 @@ class MainDrawerWidget extends StatelessWidget {
     Get.lazyPut(() => BookingsController());
 
     var currentUser = Get.find<AuthController>().currentUser;
+    print("services ids : ${currentUser["service_ids"]}");
     return Container(
       padding: EdgeInsets.only(left: 0, right: drawerWidth),
       child: Drawer(
@@ -137,10 +138,10 @@ class MainDrawerWidget extends StatelessWidget {
                       drawer: false,
                       icon: Icons.settings,
                       text: "Interface POS",
-                      onTap: (e) {
+                      onTap: (e) async{
                         Navigator.pop(context);
-                        Get.find<BookingsController>().getCategories();
-                        Get.find<HomeController>().currentPage.value = 3;
+                        Get.find<BookingsController>().userDto.value = currentUser;
+                        await Get.find<BookingsController>().getServiceByCategory(currentUser["service_ids"]);
                       }
                   ),
                   DrawerLinkWidget(

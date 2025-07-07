@@ -87,17 +87,22 @@ class AccountController extends GetxController {
 
   @override
   void onInit() async{
+    initAccountDto();
+    super.onInit();
+
+  }
+
+  initAccountDto(){
+
     pictureUpdated.value = false;
+
     var box = GetStorage();
     var userData = box.read("userData");
-    var data = await getUserInfo(userData['partner_id']);
-    currentUser.value = data;
-    email.value = data['email'];
-    userName.value = data['display_name'];
-    selectedGender.value = genderList.elementAt(0);
-    print("${email.value} and ${userName.value}");
+    currentUser.value = userData;
+    email.value = userData['email'];
+    userName.value = userData['display_name'];
 
-    super.onInit();
+    selectedGender.value = genderList.elementAt(0);
 
   }
 
@@ -105,23 +110,21 @@ class AccountController extends GetxController {
 
     var box = GetStorage();
     var userData = box.read("userData");
-    var data = await getUserInfo(userData['partner_id']);
+    var data = await getUserInfo(userData['id']);
     currentUser.value = data;
     email.value = data['email'];
     userName.value = data['display_name'];
-    print("${email.value} and ${userName.value}");
   }
 
   verifyOldPassword(String email, String password) async {
     var headers = {
-      'Content-Type': 'application/json',
-      'Cookie': 'session_id=dc69145b99f377c902d29e0b11e6ea9bb1a6a1ba'
+      'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://preprod.hubkilo.com/web/session/authenticate'));
+    var request = http.Request('POST', Uri.parse('${Domain.serverAddress}/web/session/authenticate'));
     request.body = json.encode({
       "jsonrpc": "2.0",
       "params": {
-        "db": "preprod.hubkilo.com",
+        "db": "willonhair_db",
         "login": email,
         "password": password
       }
@@ -152,8 +155,7 @@ class AccountController extends GetxController {
   updateUserPassword(String newPassword) async{
     var headers = {
       'Accept': 'application/json',
-      'Authorization': Domain.authorization,
-      'Cookie': 'session_id=d2c885aa27073b1ccdcf777cdab4d1d3ef5bef08'
+      'Authorization': Domain.authorization
     };
     var request = http.Request('PUT', Uri.parse('${Domain.serverPort}/write/res.users?ids=33&values='
         '{"password": "$newPassword"}'));
@@ -435,7 +437,6 @@ class AccountController extends GetxController {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      Get.showSnackbar(Ui.SuccessSnackBar(message: "Compte supprimé avec succès!!!".tr));
       Get.toNamed(Routes.LOGIN);
     }
     else {

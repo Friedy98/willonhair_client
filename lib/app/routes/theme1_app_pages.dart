@@ -16,8 +16,6 @@ import '../modules/auth/views/verification_view.dart';
 import '../modules/notifications/bindings/notifications_binding.dart';
 import '../modules/notifications/views/notification_details.dart';
 import '../modules/notifications/views/notifications_view.dart';
-import '../modules/rating/bindings/rating_binding.dart';
-import '../modules/rating/views/rating_view.dart';
 import '../modules/root/bindings/root_binding.dart';
 import '../modules/root/views/root_view.dart';
 import '../modules/userBookings/views/bookings_view.dart';
@@ -31,7 +29,6 @@ class Theme1AppPages {
   static final routes = [
     GetPage(name: Routes.SPLASH_VIEW, page: () => SplashView(), binding: AuthBinding()),
     GetPage(name: Routes.ROOT, page: () => RootView(), binding: RootBinding()),
-    GetPage(name: Routes.RATING, page: () => RatingView(), binding: RatingBinding()),
     GetPage(name: Routes.APPOINTMENT_BOOKING_FORM, page: () => AppointmentBookingView(), binding: AppointmentBookingBinding(), transition: Transition.leftToRight),
 
     GetPage(name: Routes.CONTACT, page: () => ContactWidget(), transition: Transition.fadeIn),

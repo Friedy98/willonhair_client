@@ -147,7 +147,7 @@ class AccountView extends GetView<AccountController> {
                       ],
                     ),
                     Obx(() =>
-                    controller.currentUser['name'] == null ?
+                    controller.currentUser == null ?
                     SpinKitFadingCircle(color: Colors.blue,size: 30) :
                     EServiceTilWidget(
                         title: Text("Mes Information", style: Get.textTheme.subtitle2.merge(TextStyle(fontSize: 16, color: Colors.black))),
@@ -165,7 +165,7 @@ class AccountView extends GetView<AccountController> {
                                       AccountLinkWidget(
                                         icon: Icons.person,
                                         text: "Nom complet",
-                                        label: controller.currentUser['name'],
+                                        label: controller.currentUser['display_name'],
                                         edit: controller.edit.value,
                                         onChange: (value)=> controller.userName.value = value,
                                       )

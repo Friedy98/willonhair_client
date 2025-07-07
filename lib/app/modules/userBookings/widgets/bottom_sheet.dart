@@ -29,7 +29,7 @@ class BottomSheetView extends GetView<BookingsController> {
               children: [
                 Container(
                     alignment: Alignment.center,
-                    width: Get.width / 3,
+                    width: Get.width / 2,
                     child: Obx(() =>
                         RichText(
                             text: TextSpan(
@@ -45,12 +45,12 @@ class BottomSheetView extends GetView<BookingsController> {
                 Spacer(),
                 Container(
                     alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width / 3,
+                    width: MediaQuery.of(context).size.width / 2,
                     child: Obx(() =>
                         RichText(
                             text: TextSpan(
                                 children: [
-                                  TextSpan(text: "Total: ", style: TextStyle(color: Colors.white, letterSpacing: 1, fontSize: 20)),
+                                  TextSpan(text: "Total: ", style: TextStyle(color: Colors.white, letterSpacing: 1, fontSize: textSize)),
                                   TextSpan(text: controller.selectedAppointment.isNotEmpty ? "${controller.price.value} EUR" : "0 EUR",
                                       style: TextStyle(color: validateColor, letterSpacing: 2, fontSize: textSize, fontWeight: FontWeight.bold))
                                 ]

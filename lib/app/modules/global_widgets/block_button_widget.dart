@@ -5,7 +5,13 @@ import '../../../color_constants.dart';
 import '../../../responsive.dart';
 
 class BlockButtonWidget extends StatelessWidget {
-  const BlockButtonWidget({Key key,@required this.text, @required this.loginPage, this.color, @required this.onPressed,@required this.disabled}) : super(key: key);
+  const BlockButtonWidget({Key key,
+    @required this.text,
+    @required this.loginPage,
+    this.color,
+    @required this.onPressed,
+    @required this.disabled
+  }) : super(key: key);
 
   final Widget text;
   final bool loginPage;

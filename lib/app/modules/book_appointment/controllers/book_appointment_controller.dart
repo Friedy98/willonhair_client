@@ -305,13 +305,19 @@ class AppointmentBookingController extends GetxController {
 
   requestAppointment()async{
     var date = DateFormat("yyyy-MM-dd").format(DateTime.parse(appointmentDate.value)).toString();
+    var clientId = 0;
 
     Get.lazyPut(() => BookingsController());
 
     var dateTimeStart = DateTime.parse("$date ${selectedTime.join(",")}:00").toString().split(".").first;
     var dateTimeEnd = DateTime.parse("$date ${selectedTime.join(",")}:00").add(Duration(minutes: serviceDuration.value)).toString().split(".").first;
-    print("$dateTimeStart and $dateTimeEnd and current user id : ${currentUser['partner_id']}");
-    print("${categoryId.value}, ${serviceId.value}, ${employeeId.value}");
+    //print("$dateTimeStart and $dateTimeEnd and current user id : ${currentUser['partner_id']}");
+    //print("${categoryId.value}, ${serviceId.value}, ${employeeId.value}");
+    if(currentUser['partner_id'] != null){
+      clientId = currentUser['partner_id'];
+    }else{
+      clientId = Get.find<BookingsController>().clientId.value;
+    }
 
     var headers = {
       'Accept': 'application/json',
@@ -329,7 +335,7 @@ class AppointmentBookingController extends GetxController {
     )) :
     http.Request('POST',Uri.parse('${Domain.serverPort}/create/business.appointment?values={ '
         '"resource_type_id": ${categoryId.value},'
-        '"partner_id": ${currentUser['partner_id']},'
+        '"partner_id": $clientId,'
     //'"description": "",'
         '"service_id": ${serviceId.value},'
         '"resource_id": ${employeeId.value},'
@@ -353,6 +359,7 @@ class AppointmentBookingController extends GetxController {
 
       }else{
         Get.showSnackbar(Ui.SuccessSnackBar(message: "Votre demande de rendez-vous à été envoyé avec succès"));
+        Get.find<BookingsController>().clientId.value = 0;
         Navigator.pop(Get.context);
       }
 
@@ -360,7 +367,7 @@ class AppointmentBookingController extends GetxController {
     else {
       var data = await response.stream.bytesToString();
       buttonPressed.value = false;
-      Get.showSnackbar(Ui.ErrorSnackBar(message: json.decode(data)['message']));
+      Get.showSnackbar(Ui.ErrorSnackBar(title: response.reasonPhrase, message: json.decode(data)['message']));
     }
   }
 
@@ -379,11 +386,11 @@ class AppointmentBookingController extends GetxController {
     if (response.statusCode == 200) {
       var data = await response.stream.bytesToString();
       Navigator.pop(Get.context);
-      Get.showSnackbar(Ui.SuccessSnackBar(message: "Votre rendez-vous à été transféré avec succès"));
+      Get.showSnackbar(Ui.SuccessSnackBar(title: response.reasonPhrase, message: "Votre rendez-vous à été transféré avec succès"));
     }
     else {
       var data = await response.stream.bytesToString();
-      Get.showSnackbar(Ui.ErrorSnackBar(message: json.decode(data)['message'] ));
+      Get.showSnackbar(Ui.ErrorSnackBar(title: response.reasonPhrase, message: json.decode(data)['message'] ));
       print(response.reasonPhrase);
     }
   }

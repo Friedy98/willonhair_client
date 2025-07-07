@@ -110,7 +110,7 @@ class RootController extends GetxController {
       case 3:
         {
           Get.lazyPut(()=>AccountController());
-          await Get.find<AccountController>().onRefresh();
+          await Get.find<AccountController>().initAccountDto();
           break;
         }
     }

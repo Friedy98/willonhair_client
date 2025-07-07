@@ -21,6 +21,7 @@ class SelectedAppointmentView extends GetView<BookingsController> {
 
   @override
   Widget build(BuildContext context) {
+
     return SizedBox(
         width: Get.width/2,
         height: Get.height - Get.height/4,
@@ -61,6 +62,14 @@ class SelectedAppointmentView extends GetView<BookingsController> {
                               ),
                           ]
                       )),
+                      Obx(() =>
+                      controller.selectedAppointment.isNotEmpty ?
+                          ListTile(
+                            title: Text(controller.selectedAppointment['service_id'][1]),
+                            subtitle: Text(controller.selectedAppointment['partner_id'][1]),
+                            trailing: Text(controller.appointmentServicePrice.value.toString()),
+                          ) : SizedBox.shrink()
+                      ),
                       SizedBox(height: 10),
                       if(controller.extraProducts.isNotEmpty && controller.selectedAppointment.isNotEmpty)...[
                         Expanded(

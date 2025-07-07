@@ -99,6 +99,14 @@ class BookingsListItemWidget extends GetView<BookingsController> {
                                     onTap: ()async{
 
                                       controller.selectedAppointment.value = list[index];
+
+                                      for(var i in controller.servicesByCategory){
+                                        if(i["id"] == controller.selectedAppointment["service_id"][0]){
+                                          controller.appointmentServicePrice.value = double.parse(i["product_price"].toString());
+                                          controller.price.value = controller.appointmentServicePrice.value;
+                                        }
+                                      }
+
                                       print(list[index]['order_id']);
                                       if(list[index]['order_id'] != null){
                                         controller.getAppointmentOrder(list[index]['order_id'][0]);

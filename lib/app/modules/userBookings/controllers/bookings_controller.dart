@@ -9,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../color_constants.dart';
 import '../../../../common/ui.dart';
 import 'package:http/http.dart' as http;
-import '../../../providers/odoo_provider.dart';
+import '../../../../responsive.dart';
 import '../../../routes/app_routes.dart';
 import '../../../services/api_services.dart';
 import '../../../services/my_auth_service.dart';
@@ -19,26 +19,27 @@ import '../../home/controllers/home_controller.dart';
 
 class BookingsController extends GetxController {
 
-  var predict1 = false.obs;
-  var errorCity1 = false.obs;
   TextEditingController searchController = TextEditingController();
-  var street = "".obs;
   var clientBonus = 0.obs;
   var bonusList = [].obs;
   var remise = [].obs;
   var remiseList = [].obs;
   var userDto = {}.obs;
+
   var search = false.obs;
+  var isLoading = true.obs;
+  var clientsLoading = false.obs;
   var price = 0.0.obs;
   var employeeDto = {}.obs;
   var orderDto = {}.obs;
+
   var bonus = [].obs;
   var paymentLink = "".obs;
   var items = [].obs;
   var resources = [].obs;
   var selectedResource = [].obs;
   var sample = [];
-  var isLoading = true.obs;
+  var sampleClients = [];
   var allServices = [].obs;
   var extraServices = [].obs;
   var extraProducts = [].obs;
@@ -51,6 +52,9 @@ class BookingsController extends GetxController {
   var invoice = [];
   var receipts = [].obs;
   var invoiceArticles = [].obs;
+
+  var appointmentServicePrice = 0.0.obs;
+
   var selectedAppointment = {}.obs;
   var selected = 0.obs;
   var totalInvoice = 0.0.obs;
@@ -61,6 +65,10 @@ class BookingsController extends GetxController {
   var firstDate = DateFormat("dd, MMMM", "fr_CA").format(DateTime.now()).toString().obs;
   var lastDate = DateFormat("dd, MMMM", "fr_CA").format(DateTime.now().subtract(Duration(days: 7))).toString().obs;
   TextEditingController dateController = TextEditingController();
+
+  var clients = [].obs;
+  var clientId = 0.obs;
+  var selectedClient = 0.obs;
 
   selectDate()async{
 
@@ -212,43 +220,30 @@ class BookingsController extends GetxController {
 
   @override
   void onInit() {
+
     super.onInit();
-
-    initValues();
   }
 
-  @override
-  void onReady(){
-    initValues();
-    super.onReady();
-  }
-
-  initValues()async{
-
+  refreshBookings()async{
     Get.lazyPut<AuthController>(
           () => AuthController(),
     );
     //var data = await getCategories();
     //allCategories.value = data;
-
     isLoading.value = true;
 
     final box = GetStorage();
     var userdata = box.read("userData");
     userDto.value = userdata;
-    var partner = await getCurrentUser(userdata['partner_id']);
+    var partner = await getCurrentUser(userdata['id']);
 
     if(Get.find<AuthController>().isEmployee.value){
-      getAppointments(userDto['appointment_ids']);
+      await getAppointments(userDto['appointment_ids']);
     }else{
 
       //print("appointments : ${partner['appointment_ids']}");
       await getAppointments(partner['appointment_ids']);
     }
-  }
-
-  refreshBookings()async{
-    initValues();
   }
 
   refreshEmployeeBookings()async{
@@ -296,6 +291,24 @@ class BookingsController extends GetxController {
     }
   }
 
+  void filterSearchClient(String query) {
+    List dummySearchList = [];
+    dummySearchList.addAll(sampleClients);
+    if(query.isNotEmpty) {
+      List dummyListData = [];
+      dummySearchList.forEach((item) {
+        if(item['name'].toLowerCase().contains(query)) {
+          dummyListData.add(item);
+        }
+      });
+      clients.value = dummyListData;
+      return;
+    } else {
+      clients.clear();
+      clients.value = sampleClients;
+    }
+  }
+
   void filterSearchInvoice(String query) {
     List dummySearchList = [];
     dummySearchList.addAll(invoice);
@@ -332,33 +345,8 @@ class BookingsController extends GetxController {
     }
   }
 
-  Future getCategories()async{
-    var headers = {
-      'Accept': 'application/json',
-      'Authorization': Domain.authorization
-    };
-    var request = http.Request('GET', Uri.parse('${Domain.serverPort}/search_read/business.resource.type'));
-
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      final data = await response.stream.bytesToString();
-      print(json.decode(data)[0]['service_ids']);
-      if(data.isNotEmpty){
-        allCategories.value = json.decode(data);
-        getServiceByCategory(json.decode(data)[0]['service_ids']);
-      }
-
-      return json.decode(data);
-    }
-    else {
-      print(response.reasonPhrase);
-    }
-  }
-
-  getServiceByCategory(var values)async{
+  Future getServiceByCategory(var values)async{
+    Get.lazyPut(() => HomeController());
     var ids = values.join(",");
     var headers = {
       'Cookie': 'frontend_lang=fr_FR; session_id=bb097a3095a1d281f01592bd331b9c8f9c8631bd; visitor_uuid=fcef730c94854dfc991dcde26c242a3e'
@@ -374,6 +362,7 @@ class BookingsController extends GetxController {
       isLoading.value = false;
       origin.value = json.decode(data);
       servicesByCategory.value = json.decode(data);
+      Get.find<HomeController>().currentPage.value = 3;
     }
     else {
       print(response.reasonPhrase);
@@ -403,7 +392,7 @@ class BookingsController extends GetxController {
     }
   }
 
-  getAppointments(var ids)async{
+  Future getAppointments(var ids)async{
 
     var headers = {
       'Accept': 'application/json',
@@ -420,6 +409,30 @@ class BookingsController extends GetxController {
       items.value = json.decode(data);
       sample = json.decode(data);
       isLoading.value = false;
+      return json.decode(data);
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  Future getClients()async{
+
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': Domain.authorization
+    };
+    var request = http.Request('GET', Uri.parse('${Domain.serverPort}/search_read/res.partner?fields=%5B%22id%22%2C%22name%22%2C%22email%22%5D'));
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      var data = await response.stream.bytesToString();
+      clients.value = json.decode(data);
+      sampleClients = json.decode(data);
+      clientsLoading.value = false;
       return json.decode(data);
     }
     else {
@@ -451,6 +464,8 @@ class BookingsController extends GetxController {
       Navigator.pop(Get.context);
       var resourceId = 0;
       var resourceName = '';
+      double imageSize = Responsive.isMobile(Get.context) ? 100 : 200;
+      double mainAxisExtent = Responsive.isMobile(Get.context) ? 170 : 260;
 
       showDialog(
           context: Get.context,
@@ -477,14 +492,14 @@ class BookingsController extends GetxController {
               ),
               content: SizedBox(
                 width: Get.width,
-                height: Get.height/2,
+                height: resources.length < 3 ? Get.height/4 : Get.height/2,
                 child: Column(
                   children: [
                     Expanded(
                         child: GridView.builder(
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
-                              mainAxisExtent: 260.0,
+                              mainAxisExtent: mainAxisExtent,
                               mainAxisSpacing: 12.0,
                               crossAxisSpacing: 25.0,
                               childAspectRatio: 1.5,
@@ -514,8 +529,8 @@ class BookingsController extends GetxController {
                                                 ClipRRect(
                                                     borderRadius: BorderRadius.all(Radius.circular(15)),
                                                     child: FadeInImage(
-                                                        width: 200,
-                                                        height: 200,
+                                                        width: imageSize,
+                                                        height: imageSize,
                                                         fit: BoxFit.cover,
                                                         image: NetworkImage('${Domain.serverPort}/image/hr.employee/${resources[item]["employee_id"][0]}/image_1920?unique=true&file_response=true',
                                                             headers: Domain.getTokenHeaders()),
@@ -525,8 +540,8 @@ class BookingsController extends GetxController {
                                                             (context, error, stackTrace) {
                                                           return Image.asset(
                                                               'assets/img/man.png',
-                                                              width: 200,
-                                                              height: 200,
+                                                              width: imageSize,
+                                                              height: imageSize,
                                                               fit: BoxFit.cover);
                                                         }
                                                     )
@@ -552,56 +567,44 @@ class BookingsController extends GetxController {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Obx(() =>
-                          InkWell(
-                            onTap: ()=> {
+                          ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(backgroundColor: selectedResource.isEmpty ? inactive : employeeInterfaceColor),
+                            onPressed: ()=> {
                               if(selectedResource.isNotEmpty){
                                 transferAppointment(resourceId, resourceName)
                               }
                             },
-                            child: Container(
-                                width: 150,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    color: selectedResource.isNotEmpty ? interfaceColor : null,
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                    border: selectedResource.isEmpty ? Border.all(width: 2, color: inactive) : null
-                                ),
-                                child: Center(
-                                  child: Text("Transférer", style: TextStyle(color: selectedResource.isEmpty ? inactive : Colors.white, letterSpacing: 2, fontSize: 15)),)
-                            ),
-                          )
+                            icon: Icon(Icons.transfer_within_a_station),
+                            label: Text(Responsive.isMobile(Get.context) ? "" : "Transférer",
+                                style: TextStyle(color: Colors.white, letterSpacing: 2, fontSize: 15)),
+                          ),
                       ),
                       SizedBox(width: 10),
-                      InkWell(
-                        onTap: (){
-                          var data = [];
-                          var serviceData;
-                          for(var i in allCategories){
-                            if(selectedAppointment['resource_type_id'][0] == i['id']){
-                              data = i['resource_ids'];
-                            }
-                          }
-                          for(var a in data){
-                            if(a == selectedAppointment['resource_id'][0]){
-                              data.remove(a);
-                            }
-                          }
-                          Get.lazyPut(() => AppointmentBookingController());
-                          Get.find<AppointmentBookingController>().updateAppointment(selectedAppointment, data);
-                          Get.find<AppointmentBookingController>().editAppointment.value = true;
-                          Get.toNamed(Routes.APPOINTMENT_BOOKING_FORM);
-                        },
-                        child: Container(
-                            width: 200,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: interfaceColor,
-                              borderRadius: BorderRadius.all(Radius.circular(30)),
-                            ),
-                            child: Center(
-                              child: Text("Modifier l'heure", style: TextStyle(color: Colors.white, letterSpacing: 2, fontSize: 15)),)
-                        )
-                      ),
+                      Obx(() =>
+                          ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(backgroundColor: selectedResource.isEmpty ? inactive : interfaceColor),
+                            onPressed: selectedResource.isEmpty ? null : (){
+                              var data = [];
+                              for(var i in allCategories){
+                                if(selectedAppointment['resource_type_id'][0] == i['id']){
+                                  data = i['resource_ids'];
+                                }
+                              }
+                              for(var a in data){
+                                if(a == selectedAppointment['resource_id'][0]){
+                                  data.remove(a);
+                                }
+                              }
+                              Get.lazyPut(() => AppointmentBookingController());
+                              Get.find<AppointmentBookingController>().updateAppointment(selectedAppointment, data);
+                              Get.find<AppointmentBookingController>().editAppointment.value = true;
+                              Get.toNamed(Routes.APPOINTMENT_BOOKING_FORM);
+                            },
+                            icon: Icon(Icons.mode_edit),
+                            label: Text(Responsive.isMobile(Get.context) ? "" : "Modifier l'heure",
+                                style: TextStyle(color: Colors.white, letterSpacing: 2, fontSize: 15)),
+                          )
+                      )
                     ]
                 )
               ],
@@ -790,7 +793,7 @@ class BookingsController extends GetxController {
     //chatTextController.dispose();
   }
 
-  getServiceDto(var item, var appointment, bool client) async{
+  Future getServiceDto(var item, var appointment, bool client) async{
 
     var headers = {
       'Cookie': 'frontend_lang=fr_FR; session_id=bb097a3095a1d281f01592bd331b9c8f9c8631bd; visitor_uuid=fcef730c94854dfc991dcde26c242a3e'
@@ -804,6 +807,7 @@ class BookingsController extends GetxController {
     if (response.statusCode == 200) {
       Navigator.pop(Get.context);
       var data = await response.stream.bytesToString();
+      double size = Responsive.isMobile(Get.context) ? 30 : 60;
       var service = json.decode(data)[0];
       var duration = service["appointment_duration"]*60;
       showDialog(
@@ -832,8 +836,8 @@ class BookingsController extends GetxController {
                       leading: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                           child: FadeInImage(
-                            width: 60,
-                            height: 60,
+                            width: size,
+                            height: size,
                             fit: BoxFit.cover,
                             image: NetworkImage("${Domain.serverPort}/image/appointment.product/${service['id']}/image_1920?unique=true&file_response=true",
                                 headers: Domain.getTokenHeaders()),
@@ -843,8 +847,8 @@ class BookingsController extends GetxController {
                                 (context, error, stackTrace) {
                               return Image.asset(
                                   "assets/img/photo_2022-11-25_01-12-07.jpg",
-                                  width: 60,
-                                  height: 60,
+                                  width: size,
+                                  height: size,
                                   fit: BoxFit.fitWidth);
                             },
                           )
@@ -858,59 +862,59 @@ class BookingsController extends GetxController {
               ),
               actions: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if(appointment['state'] == "reserved")
+                    if(appointment['state'] == "reserved" && client)
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(backgroundColor: specialColor),
-                      child: Text("Annuler le rendez-vous"),
+                      child: Text("Annuler"),
                       onPressed: ()=>{
 
                         Navigator.pop(Get.context),
-                        if(client){
-                          showDialog(
-                              context: Get.context,
-                              builder: (_){
-                                return AlertDialog(
-                                    title: Text("Annuler le rendez-vous"),
-                                    content: Text('Voulez vous vraiment annuler votre rendez-vous?', style: Get.textTheme.headline4),
-                                    actions: [
-                                      Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            TextButton(
-                                                onPressed: ()=> Navigator.pop(Get.context),
-                                                child: Text('Retour')
-                                            ),
-                                            SizedBox(width: 10),
-                                            TextButton(
-                                                onPressed: ()=> cancelBooking(appointment['id']),
-                                                child: Text('Annuler le rendez-vous', style: Get.textTheme.headline2)
-                                            )
-                                          ]
-                                      )
-                                    ]
-                                );
-                              }
-                          )
-                        }
+                        showDialog(
+                            context: Get.context,
+                            builder: (_){
+                              return AlertDialog(
+                                  title: Text("Annuler le rendez-vous"),
+                                  content: Text('Voulez vous vraiment annuler votre rendez-vous?', style: Get.textTheme.headline4),
+                                  actions: [
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          TextButton(
+                                              onPressed: ()=> Navigator.pop(Get.context),
+                                              child: Text('Retour')
+                                          ),
+                                          SizedBox(width: 10),
+                                          TextButton(
+                                              onPressed: ()=> cancelBooking(appointment['id']),
+                                              child: Text('Annuler', style: Get.textTheme.headline2)
+                                          )
+                                        ]
+                                    )
+                                  ]
+                              );
+                            }
+                        )
                       },
-                    ),
-                    SizedBox(width: 10),
+                    ).marginOnly(right: 10),
                     if(appointment['state'] == "reserved" && !client)
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(backgroundColor: employeeInterfaceColor),
                       child: Text("Traiter le rendez-vous"),
-                      onPressed: ()=>{
+                      onPressed: () async{
 
-                        Get.lazyPut(() => HomeController()),
+                        Get.lazyPut(() => HomeController());
 
-                        Navigator.pop(Get.context),
+                        Navigator.pop(Get.context);
 
-                        selectedAppointment.value = appointment,
-                        getAppointmentOrder(appointment["order_id"][0]),
-                        refreshBookings(),
-                        Get.find<HomeController>().currentPage.value = 3
+                        selectedAppointment.value = appointment;
+                        if(appointment["order_id"] != null){
+                          await getAppointmentOrder(appointment["order_id"][0]);
+                        }
+
+                        refreshBookings();
+                        Get.find<HomeController>().currentPage.value = 3;
 
                       },
                     )
@@ -925,7 +929,7 @@ class BookingsController extends GetxController {
     }
   }
 
-  getAppointmentOrder(var ids)async{
+  Future getAppointmentOrder(var ids)async{
     var headers = {
       'Accept': 'application/json',
       'Authorization': Domain.authorization
@@ -1024,7 +1028,7 @@ class BookingsController extends GetxController {
       for(var a in extraProducts){
         total += a['price_total'].toDouble();
       }
-      price.value = total;
+      price.value = total + appointmentServicePrice.value;
     }
     else {
       print("error here");

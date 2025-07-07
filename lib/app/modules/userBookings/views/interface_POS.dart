@@ -1,12 +1,7 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import '../../../../color_constants.dart';
 import '../../../../responsive.dart';
-import '../../../services/api_services.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../controllers/bookings_controller.dart';
 
@@ -34,88 +29,87 @@ class InterfacePOSView extends GetView<BookingsController> {
             onRefresh: () async {
               controller.refreshBookings();
             },
-            child:  SingleChildScrollView(
-              child: Obx(() =>
-                  Column(
-                    children: [
-                      Row(
-                          children: [
-                            Container(
-                                padding: EdgeInsets.all(10),
-                                width: Get.width/2,
-                                height: 70,
-                                child: TextFormField(
-                                  controller: controller.searchController,
-                                  decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: backgroundColor,
-                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-                                      hintText: "Rechercher des services",
-                                      contentPadding: EdgeInsets.all(10),
-                                      hintStyle: TextStyle(fontSize: 12),
-                                      suffixIcon: InkWell(
-                                          child: Container(
-                                            height: 35,
-                                            width: 30,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(5),
-                                                  bottomRight: Radius.circular(5)
-                                              ),
-                                              color: Colors.blue,
+            child:  Obx(() =>
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                        children: [
+                          Container(
+                              padding: EdgeInsets.all(10),
+                              width: Responsive.isMobile(context) ? Get.width/1.5 : Get.width/2,
+                              height: 70,
+                              child: TextFormField(
+                                controller: controller.searchController,
+                                decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: backgroundColor,
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+                                    hintText: "Rechercher des services",
+                                    contentPadding: EdgeInsets.all(10),
+                                    hintStyle: TextStyle(fontSize: 12),
+                                    suffixIcon: InkWell(
+                                        child: Container(
+                                          height: 35,
+                                          width: 30,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(5),
+                                                bottomRight: Radius.circular(5)
                                             ),
-                                            padding: EdgeInsets.all(5),
-                                            child: Center(
-                                                child: Icon(!controller.search.value ? Icons.search : Icons.close, color: Palette.background)
-                                            ),
+                                            color: Colors.blue,
                                           ),
-                                          onTap: ()async{
-                                            if(controller.search.value){
-                                              controller.search.value = !controller.search.value;
-                                              controller.items.clear();
-                                              controller.items.addAll(controller.allServices);
-                                              controller.searchController.clear();
-                                            }
+                                          padding: EdgeInsets.all(5),
+                                          child: Center(
+                                              child: Icon(!controller.search.value ? Icons.search : Icons.close, color: Palette.background)
+                                          ),
+                                        ),
+                                        onTap: ()async{
+                                          if(controller.search.value){
+                                            controller.search.value = !controller.search.value;
+                                            controller.items.clear();
+                                            controller.items.addAll(controller.allServices);
+                                            controller.searchController.clear();
                                           }
-                                      )
-                                  ),
-                                  onChanged: (value) {
-                                    controller.filterSearchServices(value);
-                                  },
-                                )
-                            ),
-                            Spacer(),
-                            Padding(
-                                padding: EdgeInsets.all(10),
-                                child: ElevatedButton.icon(
-                                    style: ElevatedButton.styleFrom(backgroundColor: employeeInterfaceColor),
-                                    onPressed: (){
+                                        }
+                                    )
+                                ),
+                                onChanged: (value) {
+                                  controller.filterSearchServices(value);
+                                },
+                              )
+                          ),
+                          if(!Responsive.isMobile(context)) Spacer(),
+                          Padding(
+                              padding: EdgeInsets.all(10),
+                              child: ElevatedButton.icon(
+                                  style: ElevatedButton.styleFrom(backgroundColor: employeeInterfaceColor),
+                                  onPressed: (){
 
-                                      showDialog(
-                                          context: context,
-                                          barrierDismissible: false,
-                                          builder: (BuildContext context) => BookingsListItemWidget()
-                                      );
-                                      controller.refreshEmployeeBookings();
-                                    },
-                                    icon: Icon(Icons.recommend),
-                                    label: Container(
-                                        padding: EdgeInsets.all(10),
-                                        child: Text("Commandes"))
-                                )),
-                            SizedBox(width: 10),
-                          ]
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ServicesWidgetView(),
-                            SelectedAppointmentView()
-                          ]
-                      )
-                    ],
-                  )
-              )
+                                    showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (BuildContext context) => BookingsListItemWidget()
+                                    );
+                                    controller.refreshEmployeeBookings();
+                                  },
+                                  icon: Icon(Icons.recommend).paddingSymmetric(vertical: 10),
+                                  label: Responsive.isMobile(context) ? SizedBox.shrink() :
+                                  Container(
+                                      padding: EdgeInsets.all(10),
+                                      child: Text("Commandes"))
+                              )).marginOnly(right: 10),
+                        ]
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ServicesWidgetView(),
+                          SelectedAppointmentView()
+                        ]
+                    )
+                  ]
+                )
             )
         )
     );

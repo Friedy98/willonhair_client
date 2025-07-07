@@ -7,12 +7,14 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../../common/ui.dart';
 import '../../../../color_constants.dart';
+import '../../../../responsive.dart';
 import '../../../services/api_services.dart';
 import '../../../routes/app_routes.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../../global_widgets/card_widget.dart';
 import '../controllers/bookings_controller.dart';
 import '../widgets/bookings_list_loader_widget.dart';
+import '../widgets/partner_widget.dart';
 
 class BookingsView extends GetView<BookingsController> {
 
@@ -44,7 +46,15 @@ class BookingsView extends GetView<BookingsController> {
                 backgroundColor: employeeInterfaceColor,
                 heroTag: null,
                 //backgroundColor: interfaceColor,
-                onPressed: ()=> Get.toNamed(Routes.APPOINTMENT_BOOKING_FORM),
+                onPressed: () async{
+                  controller.clientsLoading.value = true;
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) => PartnersView()
+                  );
+                  await controller.getClients();
+                },
                 label: Text('Ajouter un rendez-vous'),
                 icon: Icon(Icons.add, color: Palette.background)
             ),
@@ -72,7 +82,12 @@ class BookingsView extends GetView<BookingsController> {
         ) : null,
         body: RefreshIndicator(
             onRefresh: () async {
-              controller.refreshBookings();
+              if(Get.find<AuthController>().isEmployee.value){
+                controller.refreshEmployeeBookings();
+              }else{
+                controller.refreshBookings();
+              }
+
             },
             child: SingleChildScrollView(
               child: Column(
@@ -109,7 +124,7 @@ class BookingsView extends GetView<BookingsController> {
                         Spacer(),
                         Container(
                             margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                            width: MediaQuery.of(context).size.width / 2.5,
+                            width: Responsive.isMobile(context) ? 130 : MediaQuery.of(context).size.width / 2.5,
                             height: 50,
                             child: TextFormField(
                               controller: controller.dateController,

@@ -62,7 +62,7 @@ class HomeController extends GetxController {
   getUserDto()async{
     setData();
     final userdata = box.read('userData');
-    userId.value = userdata['partner_id'];
+    userId.value = userdata['id'];
 
     if(!Get.find<AuthController>().isEmployee.value){
       var data = await getUserInfo(userId.value);
@@ -222,9 +222,9 @@ class HomeController extends GetxController {
     switch (_index) {
       case 0:
         {
-          await Get.find<BookingsController>().refreshBookings();
           Get.find<BookingsController>().showBackButton.value = true;
           await Get.toNamed(Routes.APPOINTMENT_BOOK);
+          await Get.find<BookingsController>().refreshBookings();
           break;
         }
       case 1:

@@ -40,8 +40,6 @@ class AuthController extends GetxController {
   // GoogleSignIn googleAuth = GoogleSignIn();
   // GoogleSignInAccount googleAccount;
   var users = [].obs;
-  var auth;
-  var authUserId = 0.obs;
   var resources = [].obs;
   var currentUser = {}.obs;
   var appointmentIds = [].obs;
@@ -327,10 +325,9 @@ class AuthController extends GetxController {
       if(data != null){
 
         var partner = await controller.getCurrentUser(data['partner_id']);
-
         if(role == "client"){
-
-          box.write("userData", data);
+          currentUser.value = partner;
+          box.write("userData", partner);
           Get.showSnackbar(Ui.SuccessSnackBar(message: "connexion réussi, bon retour M/Mme ${data['name']}"));
           appointmentIds.value = partner['appointment_ids'];
           loading.value = false;
@@ -365,12 +362,16 @@ class AuthController extends GetxController {
       else{
         Get.showSnackbar(Ui.ErrorSnackBar(message: "User credentials not matching or existing"));
         loading.value = false;
+        employeeLoading.value = false;
         return 0;
         //throw new Exception(response.reasonPhrase);
       }
     }
-    else {Get.showSnackbar(Ui.ErrorSnackBar(message: "An error occurred, please try to login again"));
-    loading.value = false;
+    else {
+      Get.showSnackbar(Ui.ErrorSnackBar(title: response.reasonPhrase, message: "An error occurred, please try to login again"));
+      loading.value = false;
+      employeeLoading.value = false;
+      print(response.reasonPhrase);
     }
   }
 
@@ -405,7 +406,7 @@ class AuthController extends GetxController {
           employeeLoading.value = false;
           isEmployee.value = true;
           box.write("userData", employee);
-          Get.showSnackbar(Ui.SuccessSnackBar(message: "connexion réussi, bon retour M/Mme ${employee['display_name']}"));
+          Get.showSnackbar(Ui.SuccessSnackBar(title: response.reasonPhrase, message: "connexion réussi, bon retour M/Mme ${employee['display_name']}"));
           await Get.find<HomeController>().initValues();
           Get.toNamed(Routes.EMPLOYEE_HOME);
           /*showDialog(
@@ -444,7 +445,7 @@ class AuthController extends GetxController {
 
         }else{
           box.write("userData", user);
-          Get.showSnackbar(Ui.SuccessSnackBar(message: "connexion réussi, bon retour M/Mme ${user['name']}"));
+          Get.showSnackbar(Ui.SuccessSnackBar(title: response.reasonPhrase, message: "connexion réussi, bon retour M/Mme ${user['name']}"));
           Get.toNamed(Routes.ROOT);
         }
         employeeLoading.value = false;
@@ -452,6 +453,7 @@ class AuthController extends GetxController {
       }
       else {
         loading.value = false;
+        employeeLoading.value = false;
         var result = await response.stream.bytesToString();
         var data = json.decode(result);
         Get.showSnackbar(Ui.ErrorSnackBar(message: data.toString()));
@@ -487,7 +489,7 @@ class AuthController extends GetxController {
     else {
       print(response.reasonPhrase);
       var data = await response.stream.bytesToString();
-      Get.showSnackbar(Ui.ErrorSnackBar(message: json.decode(data)['message']));
+      Get.showSnackbar(Ui.ErrorSnackBar(title: response.reasonPhrase, message: json.decode(data)['message']));
       loading.value = false;
     }
   }
@@ -531,7 +533,7 @@ class AuthController extends GetxController {
     else {
       var data = await response.stream.bytesToString();
       print(response.reasonPhrase);
-      Get.showSnackbar(Ui.ErrorSnackBar(message: json.decode(data)['message']));
+      Get.showSnackbar(Ui.ErrorSnackBar(title: response.reasonPhrase, message: json.decode(data)['message']));
     }
   }
 

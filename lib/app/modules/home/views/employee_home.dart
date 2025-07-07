@@ -57,7 +57,7 @@ class EmployeeHomeView extends GetView<HomeController> {
                           image: AssetImage('assets/img/qr-code.png'))
                   )
               )
-          ) : controller.currentPage.value != 4 ?
+          ) : controller.currentPage.value != 4 && controller.currentPage.value != 1 ?
           FloatingActionButton(
                 onPressed: (){
                   if(MediaQuery.of(context).orientation == Orientation.portrait)
