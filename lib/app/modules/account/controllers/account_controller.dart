@@ -109,6 +109,7 @@ class AccountController extends GetxController {
   onRefresh() async{
 
     var box = GetStorage();
+    pictureUpdated.value = false;
     var userData = box.read("userData");
     var data = await getUserInfo(userData['id']);
     currentUser.value = data;

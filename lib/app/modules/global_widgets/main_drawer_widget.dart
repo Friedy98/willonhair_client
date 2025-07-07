@@ -31,7 +31,6 @@ class MainDrawerWidget extends StatelessWidget {
     Get.lazyPut(() => BookingsController());
 
     var currentUser = Get.find<AuthController>().currentUser;
-    print("services ids : ${currentUser["service_ids"]}");
     return Container(
       padding: EdgeInsets.only(left: 0, right: drawerWidth),
       child: Drawer(
@@ -61,7 +60,7 @@ class MainDrawerWidget extends StatelessWidget {
                                 style: Theme.of(context).textTheme.displayMedium.
                                 merge(TextStyle(color: Colors.white, fontSize: 15)),
                               ),
-                              accountEmail: Text(currentUser['info_resource_calendar_id'][1],
+                              accountEmail: Text(currentUser['info_resource_calendar_id'] != null ? currentUser['info_resource_calendar_id'][1] : "",
                                 style: TextStyle(color: Colors.white, fontSize: 12),
                               ),
                               currentAccountPicture: Stack(

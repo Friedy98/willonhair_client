@@ -67,9 +67,7 @@ class PartnersView extends GetView<BookingsController> {
                                   ),
                                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(2.0)),
                                 ),
-                                onChanged: (value) {
-                                  controller.filterSearchResults(value);
-                                },
+                                onChanged: (value) => controller.filterSearchClient(value)
                               )
                           ),
                           SizedBox(width: 10)

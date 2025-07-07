@@ -53,96 +53,97 @@ class AccountView extends GetView<AccountController> {
                             ),
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                                decoration: Ui.getBoxDecoration(
-                                  //radius: 14,
-                                  border: Border.all(width: 5, color: Get.theme.primaryColor),
-                                ),
-                                child: InkWell(
-                                    onTap: ()=>{
+                        SizedBox(
+                            height: 180,
+                            width: 160,
+                            child: InkWell(
+                                onTap: ()=>{
 
-                                      showDialog(
-                                          context: context,
-                                          builder: (_){
-                                            return Column(
-                                              crossAxisAlignment: CrossAxisAlignment.end,
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Material(
-                                                    child: IconButton(onPressed: ()=> Navigator.pop(context), icon: Icon(Icons.close, size: 20))
-                                                ),
-                                                ClipRRect(
-                                                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                                                  child: FadeInImage(
-                                                    width: Get.width,
-                                                    height: Get.height/2,
-                                                    fit: BoxFit.cover,
-                                                    image: Domain.googleUser ? NetworkImage(Domain.googleImage) : NetworkImage('${Domain.serverPort}/image/res.partner/${controller.currentUser['id']}/image_1920?unique=true&file_response=true', headers: Domain.getTokenHeaders()),
-                                                    placeholder: AssetImage(
-                                                        "assets/img/loading.gif"),
-                                                    imageErrorBuilder:
-                                                        (context, error, stackTrace) {
-                                                      return Center(
-                                                          child: Container(
-                                                              width: Get.width/1.5,
-                                                              height: Get.height/3,
-                                                              color: Colors.white,
-                                                              child: Center(
-                                                                  child: Icon(Icons.person, size: 150)
-                                                              )
+                                  showDialog(
+                                      context: context,
+                                      builder: (_){
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Material(
+                                                child: IconButton(onPressed: ()=> Navigator.pop(context), icon: Icon(Icons.close, size: 20))
+                                            ),
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                                              child: FadeInImage(
+                                                width: Get.width,
+                                                height: Get.height/2,
+                                                fit: BoxFit.cover,
+                                                image: Domain.googleUser ? NetworkImage(Domain.googleImage) : NetworkImage('${Domain.serverPort}/image/res.partner/${controller.currentUser['id']}/image_1920?unique=true&file_response=true', headers: Domain.getTokenHeaders()),
+                                                placeholder: AssetImage(
+                                                    "assets/img/loading.gif"),
+                                                imageErrorBuilder:
+                                                    (context, error, stackTrace) {
+                                                  return Center(
+                                                      child: Container(
+                                                          width: Get.width/1.5,
+                                                          height: Get.height/3,
+                                                          color: Colors.white,
+                                                          child: Center(
+                                                              child: Icon(Icons.person, size: 150)
                                                           )
-                                                      );
-                                                    },
-                                                  ),
-                                                )
-                                              ],
-                                            );
-                                          })
-                                    },
-                                    child: Obx(() =>
+                                                      )
+                                                  );
+                                                },
+                                              ),
+                                            )
+                                          ],
+                                        );
+                                      })
+                                },
+                                child: Stack(
+                                  children: [
+                                    Obx(() =>
                                     !controller.pictureUpdated.value ?
-                                    Container(
-                                        padding: EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                                        ),
-                                        child: FadeInImage(
-                                            width: 100,
-                                            height: 100,
+                                    Positioned(
+                                      top: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: ClipOval(
+                                          child: FadeInImage(
+                                            width: 180,
+                                            height: 180,
                                             fit: BoxFit.cover,
-                                            image: Domain.googleUser ? NetworkImage(Domain.googleImage) : NetworkImage('${Domain.serverPort}/image/res.partner/${controller.currentUser['id']}/image_1920?unique=true&file_response=true',
-                                                headers: Domain.getTokenHeaders()),
+                                            image: NetworkImage('${Domain.serverPort}/image/res.partner/${controller.currentUser['id']}/image_1920?unique=true&file_response=true', headers: Domain.getTokenHeaders()),
                                             placeholder: AssetImage(
                                                 "assets/img/loading.gif"),
                                             imageErrorBuilder:
                                                 (context, error, stackTrace) {
                                               return Image.asset(
-                                                  'assets/img/man.png',
+                                                  'assets/img/téléchargement (3).png',
                                                   width: 100,
                                                   height: 100,
-                                                  fit: BoxFit.contain);
-                                            }
-                                        )
+                                                  fit: BoxFit.fitWidth);
+                                            },
+                                          )
+                                      ),
                                     ) : Image.file(controller.image, width: 100, height: 100, fit: BoxFit.cover)
+                                    ),
+                                    Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: interfaceColor,
+                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                          ),
+                                          child: IconButton(
+                                              onPressed: ()=>{
+                                                controller.selectCameraOrGallery()
+                                              },
+                                              icon: Icon(Icons.camera_alt, color: Get.theme.primaryColor)
+                                          ),
+                                        )
                                     )
-                                )
-                            ),
-                            CircleAvatar(
-                                backgroundColor: interfaceColor,
-                                radius: 20,
-                                child: IconButton(
-                                    onPressed: ()=>{
-                                      controller.selectCameraOrGallery()
-                                    },
-                                    icon: Icon(Icons.camera_alt, color: Get.theme.primaryColor)
+                                  ],
                                 )
                             )
-                          ],
                         ),
                       ],
                     ),
@@ -185,7 +186,7 @@ class AccountView extends GetView<AccountController> {
                                       AccountLinkWidget(
                                         icon: Icons.phone_android,
                                         text: "Mobile",
-                                        label: controller.currentUser['phone'].toString(),
+                                        label: controller.currentUser['mobile'].toString(),
                                         edit: controller.edit.value,
                                         onChange: (value)=> controller.phone.value = value,
                                       )
@@ -194,6 +195,7 @@ class AccountView extends GetView<AccountController> {
                                   Obx(() =>
                                   controller.edit.value ?
                                   ElevatedButton(
+                                    style: ElevatedButton.styleFrom(backgroundColor: interfaceColor),
                                       child: Text("Soumetre"),
                                       onPressed: ()=>{
                                         controller.updateProfile(),

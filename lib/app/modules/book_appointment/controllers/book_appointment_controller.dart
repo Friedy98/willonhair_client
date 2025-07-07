@@ -7,6 +7,7 @@ import '../../../../common/ui.dart';
 import '../../../services/api_services.dart';
 import 'package:http/http.dart' as http;
 
+import '../../auth/controllers/auth_controller.dart';
 import '../../userBookings/controllers/bookings_controller.dart';
 
 class AppointmentBookingController extends GetxController {
@@ -308,15 +309,16 @@ class AppointmentBookingController extends GetxController {
     var clientId = 0;
 
     Get.lazyPut(() => BookingsController());
+    Get.lazyPut(() => AuthController());
 
     var dateTimeStart = DateTime.parse("$date ${selectedTime.join(",")}:00").toString().split(".").first;
     var dateTimeEnd = DateTime.parse("$date ${selectedTime.join(",")}:00").add(Duration(minutes: serviceDuration.value)).toString().split(".").first;
     //print("$dateTimeStart and $dateTimeEnd and current user id : ${currentUser['partner_id']}");
     //print("${categoryId.value}, ${serviceId.value}, ${employeeId.value}");
-    if(currentUser['partner_id'] != null){
-      clientId = currentUser['partner_id'];
-    }else{
+    if(Get.find<AuthController>().isEmployee.value){
       clientId = Get.find<BookingsController>().clientId.value;
+    }else{
+      clientId = currentUser['id'];
     }
 
     var headers = {
@@ -350,7 +352,6 @@ class AppointmentBookingController extends GetxController {
 
     if (response.statusCode == 200)  {
       var result = await response.stream.bytesToString();
-      print(result);
       buttonPressed.value = false;
       Get.find<BookingsController>().refreshBookings();
       if(editAppointment.value){
@@ -384,7 +385,7 @@ class AppointmentBookingController extends GetxController {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      var data = await response.stream.bytesToString();
+
       Navigator.pop(Get.context);
       Get.showSnackbar(Ui.SuccessSnackBar(title: response.reasonPhrase, message: "Votre rendez-vous à été transféré avec succès"));
     }

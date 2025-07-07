@@ -85,7 +85,9 @@ class RootController extends GetxController {
 
   Future<void> refreshPage(int _index) async {
     if(_index != 2){
-      Get.find<HomeController>().timer.cancel();
+      if(Get.find<HomeController>().timer != null){
+        Get.find<HomeController>().timer.cancel();
+      }
     }
     switch (_index) {
       case 0:
