@@ -240,7 +240,6 @@ class BookingsController extends GetxController {
     if(Get.find<AuthController>().isEmployee.value){
       await getAppointments(userDto['appointment_ids']);
     }else{
-
       //print("appointments : ${partner['appointment_ids']}");
       await getAppointments(partner['appointment_ids']);
     }
@@ -412,6 +411,7 @@ class BookingsController extends GetxController {
       return json.decode(data);
     }
     else {
+      isLoading.value = false;
       print(response.reasonPhrase);
     }
   }
@@ -436,6 +436,7 @@ class BookingsController extends GetxController {
       return json.decode(data);
     }
     else {
+      clientsLoading.value = false;
       print(response.reasonPhrase);
     }
   }
@@ -996,10 +997,8 @@ class BookingsController extends GetxController {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      var data = await response.stream.bytesToString();
       Navigator.pop(Get.context);
       refreshBookings();
-      Get.showSnackbar(Ui.SuccessSnackBar(message: "Votre rendez-vous à été annulé avec succès".tr ));
     }
     else {
       var data = await response.stream.bytesToString();

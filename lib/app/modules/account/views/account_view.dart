@@ -105,7 +105,9 @@ class AccountView extends GetView<AccountController> {
                                       top: 0,
                                       left: 0,
                                       right: 0,
-                                      child: ClipOval(
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                          radius: 90,
                                           child: FadeInImage(
                                             width: 180,
                                             height: 180,
@@ -116,10 +118,10 @@ class AccountView extends GetView<AccountController> {
                                             imageErrorBuilder:
                                                 (context, error, stackTrace) {
                                               return Image.asset(
-                                                  'assets/img/téléchargement (3).png',
+                                                  'assets/img/willonhair.png',
                                                   width: 100,
                                                   height: 100,
-                                                  fit: BoxFit.fitWidth);
+                                                  fit: BoxFit.cover);
                                             },
                                           )
                                       ),

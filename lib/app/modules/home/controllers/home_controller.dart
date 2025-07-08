@@ -193,18 +193,20 @@ class HomeController extends GetxController {
   }
 
   void navigateTo() async{
+    final double latitude = 50.45097351074219;   // example: San Francisco
+    final double longitude = 3.947808265686035;
     //String query = Uri.encodeComponent(address);
-    String googleUrl = "https://www.google.com/maps/dir//William+On+Hair+-+Fashion+Beaut%C3%A9+Mons/data=!4m6!4m5!1m1!4e2!1m2!1m1!1s0x47c25006bb9d310b:0xe6a44322fcfa67ab?sa=X&hl=fr&ved=2ahUKEwiU6o2Z3uf8AhWUraQKHWuiAI0Q9Rd6BAhbEAU";
+    String googleUrl = "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude";
     final Uri _url = Uri.parse(googleUrl);
 
-    await launchUrl(_url,mode: LaunchMode.platformDefault);
+    await launchUrl(_url,mode: LaunchMode.externalApplication);
   }
 
   void launchInstagram() async{
     const url = "https://instagram.com/will_on_hair?igshid=YmMyMTA2M2Y=";
     final Uri _url = Uri.parse(url);
 
-    await launchUrl(_url,mode: LaunchMode.platformDefault);
+    await launchUrl(_url,mode: LaunchMode.externalApplication);
   }
 
   void avisClients() async{
@@ -212,7 +214,7 @@ class HomeController extends GetxController {
     String googleUrl = "https://willonhair.com/#avis-clients";
     final Uri _url = Uri.parse(googleUrl);
 
-    await launchUrl(_url,mode: LaunchMode.platformDefault);
+    await launchUrl(_url,mode: LaunchMode.externalApplication);
   }
 
   Future<void> changePage(int _index) async {
