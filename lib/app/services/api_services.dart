@@ -23,6 +23,9 @@ class Domain{
   static var googleUser = false;
   static var googleImage = '';
 
+  static double latitude = 50.45110542196153;   // example: San Francisco
+  static double longitude = 3.9464216706805018;
+
   static var authorization = "Basic YWRtaW46YWRtaW4=";
   static var AppName = "Will On Hair";
   static Map<String, String> getTokenHeaders() {

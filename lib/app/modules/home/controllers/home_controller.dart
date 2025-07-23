@@ -193,10 +193,9 @@ class HomeController extends GetxController {
   }
 
   void navigateTo() async{
-    final double latitude = 50.45097351074219;   // example: San Francisco
-    final double longitude = 3.947808265686035;
+
     //String query = Uri.encodeComponent(address);
-    String googleUrl = "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude";
+    String googleUrl = "https://www.google.com/maps/search/?api=1&query=${Domain.latitude},${Domain.longitude}";
     final Uri _url = Uri.parse(googleUrl);
 
     await launchUrl(_url,mode: LaunchMode.externalApplication);

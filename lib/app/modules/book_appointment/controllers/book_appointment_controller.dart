@@ -57,6 +57,7 @@ class AppointmentBookingController extends GetxController {
   var currentUser = {}.obs;
   var editAppointment = false.obs;
   var appointmentDto = {}.obs;
+  var sample = [];
 
   @override
   void onInit() async {
@@ -182,6 +183,24 @@ class AppointmentBookingController extends GetxController {
     }
   }
 
+  void filterSearchServices(String query) {
+    List dummySearchList = [];
+    dummySearchList.addAll(sample);
+    if(query.isNotEmpty) {
+      List dummyListData = [];
+      dummySearchList.forEach((item) {
+        if(item['name'].toLowerCase().contains(query)) {
+          dummyListData.add(item);
+        }
+      });
+      services.value = dummyListData;
+      return;
+    } else {
+      services.clear();
+      services.value = sample;
+    }
+  }
+
   getCategoryHairStyle(var values)async{
     loadServices.value = true;
     var ids = values.join(",");
@@ -198,10 +217,11 @@ class AppointmentBookingController extends GetxController {
     if (response.statusCode == 200) {
       var data = await response.stream.bytesToString();
       services.value = json.decode(data);
+      sample = json.decode(data);
       loadServices.value = false;
-      print(services);
     }
     else {
+      loadServices.value = false;
       print(response.reasonPhrase);
     }
   }
@@ -224,6 +244,7 @@ class AppointmentBookingController extends GetxController {
       employees.value = list;
     }
     else {
+      loadEmployees.value = false;
       print(response.reasonPhrase);
     }
   }

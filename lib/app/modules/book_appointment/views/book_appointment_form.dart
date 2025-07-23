@@ -343,14 +343,14 @@ class AppointmentBookingView extends GetView<AppointmentBookingController> {
                                   border: controller.categorySelected.contains(controller.categories[index]['id']) ? Border.all(width: 3, color: primaryColor) : null
                               ),
                               width: Get.width,
-                              height: Responsive.isTablet(context) ? 200 : 100,
+                              height: Responsive.isTablet(context) ? 220 : 120,
                               child: Row(
                                 children: <Widget>[
                                   ClipRRect(
                                     borderRadius: BorderRadius.all(Radius.circular(15)),
                                     child: FadeInImage(
-                                      width: Get.width/3,
-                                      height: Responsive.isTablet(context) ? 200 : 100,
+                                      width: Get.width/2.7,
+                                      height: Responsive.isTablet(context) ? 220 : 120,
                                       fit: BoxFit.cover,
                                       image: NetworkImage('${Domain.serverPort}/image/business.resource.type/${controller.categories[index]["id"]}/image_1920?unique=true&file_response=true',
                                           headers: Domain.getTokenHeaders()),
@@ -360,9 +360,9 @@ class AppointmentBookingView extends GetView<AppointmentBookingController> {
                                           (context, error, stackTrace) {
                                         return Image.asset(
                                             'assets/img/240_F_142999858_7EZ3JksoU3f4zly0MuY3uqoxhKdUwN5u.jpeg',
-                                            width: Get.width/3,
-                                            height: Responsive.isTablet(context) ? 200 : 100,
-                                            fit: BoxFit.fitWidth);
+                                            width: Get.width/2.7,
+                                            height: Responsive.isTablet(context) ? 220 : 120,
+                                            fit: BoxFit.cover);
                                       },
                                     ),
                                   ),
@@ -414,7 +414,31 @@ class AppointmentBookingView extends GetView<AppointmentBookingController> {
           style: TextStyle(
               fontSize: 14.0, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 20),
+        Padding(
+          padding: EdgeInsets.all(10),
+          child: SizedBox(
+              width: Get.width/1.3,
+              child: TextFormField(
+                //controller: controller.textEditingController,
+                  style: Get.textTheme.headline4,
+                  onChanged: (value)=> controller.filterSearchServices(value),
+                  autofocus: false,
+                  cursorColor: Get.theme.focusColor,
+                  decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 1, color: buttonColor),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      hintText: "Rechercher par nom",
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: Icon(Icons.search),
+                      hintStyle: Get.textTheme.caption,
+                      contentPadding: EdgeInsets.all(10)
+                  )
+              )
+          ),
+        ).marginSymmetric(vertical: 10),
         Expanded(
           child: Obx(() => controller.loadServices.value ?
 
@@ -458,7 +482,7 @@ class AppointmentBookingView extends GetView<AppointmentBookingController> {
                               borderRadius: BorderRadius.all(Radius.circular(15)),
                               child: FadeInImage(
                                 width: Get.width/3,
-                                height: Responsive.isTablet(context) ? 240 : 150,
+                                height: Responsive.isTablet(context) ? 240 : 130,
                                 fit: BoxFit.cover,
                                 image: NetworkImage('${Domain.serverPort}/image/appointment.product/${controller.services[index]["id"]}/image_1920?unique=true&file_response=true',
                                     headers: Domain.getTokenHeaders()),
@@ -469,14 +493,14 @@ class AppointmentBookingView extends GetView<AppointmentBookingController> {
                                   return Image.asset(
                                       'assets/img/240_F_142999858_7EZ3JksoU3f4zly0MuY3uqoxhKdUwN5u.jpeg',
                                       width: Get.width/3,
-                                      height: Responsive.isTablet(context) ? 240 : 150,
-                                      fit: BoxFit.fitWidth);
+                                      height: Responsive.isTablet(context) ? 240 : 130,
+                                      fit: BoxFit.cover);
                                 },
                               ),
-                            ),
-                            SizedBox(height: 10),
+                            ).marginOnly(bottom: 20),
                             Text(controller.services[index]
-                            ["name"].split(">").first, style: Get.textTheme.headline4),
+                            ["name"],
+                                maxLines: 2,overflow: TextOverflow.ellipsis,textAlign: TextAlign.center, style: Get.textTheme.headline4),
                             Text(controller.services[index]
                             ["product_price"].toString()+" €", style: Get.textTheme.headline2),
                             SizedBox(height: 10)
